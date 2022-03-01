@@ -1,6 +1,6 @@
 package cz.cuni.mff.kyjovsm.ocr;
 
-import javax.xml.ws.Endpoint;
+import jakarta.xml.ws.Endpoint;
 
 public class Runner {
 

@@ -1,9 +1,17 @@
 package cz.cuni.mff.kyjovsm.ocr;
 
-@javax.jws.WebService
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
+
+@WebService
 public interface OCR {
 
-    @javax.jws.WebMethod
-    public void foo();
-    //TODO: Define the interface
+    /**
+     * This function should fetch the file from the associated S3 bucket and pass it to the OCR computation service.
+     *
+     * @return <code>true</code> if the computation succeeds, else <code>false</code>.
+     */
+    @WebMethod
+    boolean compute(String s3Uri, String accessToken);
+
 }

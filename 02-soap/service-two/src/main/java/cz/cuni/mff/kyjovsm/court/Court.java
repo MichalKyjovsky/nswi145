@@ -1,10 +1,18 @@
 package cz.cuni.mff.kyjovsm.court;
 
-@javax.jws.WebService
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
+
+/**
+ * The interface representing the Court services.
+ */
+@WebService
 public interface Court {
 
-    @javax.jws.WebMethod
-    public void foo();
-    //TODO: Implement me
+    /**
+     * The following method stores the data from the request to the database via JPA as a {@link Client} entity.
+     */
+    @WebMethod
+    Client registerClient(Integer clientID, String name, Integer age);
 
 }
