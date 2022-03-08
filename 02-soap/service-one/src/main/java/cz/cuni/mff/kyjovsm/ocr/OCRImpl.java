@@ -37,6 +37,12 @@ public class OCRImpl implements OCR {
         return false;
     }
 
+    @Override
+    public TaskResult getTaskResult(String taskId) {
+        return TaskResult.fetchResultFromOCR(taskId);
+    }
+
+
     private Connection createConnection(String uri) {
         LOGGER.info("Creating connection to the user storage: {}", uri);
         return uri.isEmpty() ? new Connection(uri) : null;

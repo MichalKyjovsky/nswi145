@@ -12,6 +12,7 @@ public class CourtImpl implements Court {
 
     private static final Logger LOGGER = LogManager.getLogger();
 
+
     @Override
     public Client registerClient(Integer clientID, String name, Integer age) {
         Objects.requireNonNull(clientID, "Client's ID is required");
@@ -23,6 +24,30 @@ public class CourtImpl implements Court {
         } catch (InterruptedException e) {
             throw new IllegalStateException("Problem with client data processing encountered.");
         }
+    }
+
+    @Override
+    public boolean archiveClient(Integer clientID) {
+        Objects.requireNonNull(clientID, "Client's ID is required");
+        LOGGER.info(String.format("Archiving Client with ID: %s...", clientID));
+
+        boolean status = true;
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            status = false;
+        }
+
+        if (status) {
+            LOGGER.info(String.format("Client with ID: %d was successfully archived.", clientID));
+            return true;
+        } else {
+            LOGGER.error(String.format("An error occurred during archiving of Client with ID: %d. Please contact the support service", clientID));
+            return false;
+        }
+
     }
 
 

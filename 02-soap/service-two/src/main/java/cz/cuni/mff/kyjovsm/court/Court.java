@@ -15,4 +15,11 @@ public interface Court {
     @WebMethod
     Client registerClient(Integer clientID, String name, Integer age);
 
+    /**
+     * @param clientID
+     * @return
+     */
+    @WebMethod
+    boolean archiveClient(Integer clientID);
+
 }

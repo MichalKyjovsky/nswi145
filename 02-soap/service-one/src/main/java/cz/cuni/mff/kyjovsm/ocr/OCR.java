@@ -3,6 +3,7 @@ package cz.cuni.mff.kyjovsm.ocr;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebService;
 
+
 @WebService
 public interface OCR {
 
@@ -13,5 +14,12 @@ public interface OCR {
      */
     @WebMethod
     boolean compute(String s3Uri, String accessToken);
+
+    /**
+     * @param taskId
+     * @return
+     */
+    @WebMethod
+    TaskResult getTaskResult(String taskId);
 
 }
