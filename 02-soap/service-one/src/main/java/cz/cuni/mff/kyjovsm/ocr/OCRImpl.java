@@ -14,7 +14,6 @@ public class OCRImpl implements OCR {
 
     private static final Random OCR_COMPUTATION = new Random();
 
-    @Override
     public boolean compute(String s3Uri, String accessToken) {
         try {
 
@@ -37,7 +36,6 @@ public class OCRImpl implements OCR {
         return false;
     }
 
-    @Override
     public TaskResult getTaskResult(String taskId) {
         return TaskResult.fetchResultFromOCR(taskId);
     }
@@ -45,7 +43,7 @@ public class OCRImpl implements OCR {
 
     private Connection createConnection(String uri) {
         LOGGER.info("Creating connection to the user storage: {}", uri);
-        return uri.isEmpty() ? new Connection(uri) : null;
+        return !uri.isEmpty() ? new Connection(uri) : null;
     }
 
     private boolean process(Connection connection) throws InterruptedException {

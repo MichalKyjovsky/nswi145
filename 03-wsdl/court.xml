@@ -8,8 +8,7 @@
         <!-- types (0,1) -->
         <xs:schema xmlns:tns="http://court.kyjovsm.mff.cuni.cz/"
                    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                   targetNamespace="http://court.kyjovsm.mff.cuni.cz/"
-                   elementFormDefault="qualified">
+                   targetNamespace="http://court.kyjovsm.mff.cuni.cz/">
             <xs:element name="archiveClient" type="tns:archiveClient"/>
             <xs:element name="archiveClientResponse" type="tns:archiveClientResponse"/>
             <xs:element name="registerClient" type="tns:registerClient"/>

@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
              xmlns:tns="http://ocr.kyjovsm.mff.cuni.cz/"
+             xmlns:xs="http://www.w3.org/2001/XMLSchema"
              xmlns="http://schemas.xmlsoap.org/wsdl/"
              targetNamespace="http://ocr.kyjovsm.mff.cuni.cz/"
              name="OCRImplService">
-
-    <documentation>WSDL Specification to the OCR Service</documentation>
-
-    <!-- types (0,1) -->
     <types>
         <xs:schema xmlns:tns="http://ocr.kyjovsm.mff.cuni.cz/"
                    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                   targetNamespace="http://ocr.kyjovsm.mff.cuni.cz/"
-                   elementFormDefault="qualified">
+                   targetNamespace="http://ocr.kyjovsm.mff.cuni.cz/">
             <xs:element name="compute" type="tns:compute"/>
             <xs:element name="computeResponse" type="tns:computeResponse"/>
             <xs:element name="getTaskResult" type="tns:getTaskResult"/>
@@ -73,8 +69,6 @@
             </xs:complexType>
         </xs:schema>
     </types>
-
-    <!-- messages (0,*) -->
     <message name="compute">
         <part name="parameters" element="tns:compute"/>
     </message>
@@ -87,9 +81,7 @@
     <message name="getTaskResultResponse">
         <part name="parameters" element="tns:getTaskResultResponse"/>
     </message>
-
-    <!-- port types (0,*) -->
-    <portType name="OCRPortType">
+    <portType name="OCR">
         <operation name="compute">
             <input message="tns:compute"/>
             <output message="tns:computeResponse"/>
@@ -99,9 +91,7 @@
             <output message="tns:getTaskResultResponse"/>
         </operation>
     </portType>
-
-    <!-- bindings (0,*) -->
-    <binding name="OCRImplPortBinding" type="tns:OCRPortType">
+    <binding name="OCRPortBinding" type="tns:OCR">
         <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
         <operation name="compute">
             <soap:operation soapAction=""/>
@@ -122,8 +112,8 @@
             </output>
         </operation>
     </binding>
-    <service name="OCRImplService">
-        <port name="OCRImplPort" binding="tns:OCRImplPortBinding">
+    <service name="OCRService">
+        <port name="OCRPort" binding="tns:OCRPortBinding">
             <soap:address location="http://127.0.0.1:8000/OCR"/>
         </port>
     </service>

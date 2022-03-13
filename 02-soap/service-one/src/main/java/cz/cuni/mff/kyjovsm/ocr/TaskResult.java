@@ -38,8 +38,8 @@ public class TaskResult implements Serializable {
             HashMap<String, String> metadata = new HashMap<>();
             HashMap<String, String> resultSet = new HashMap<>();
 
-            generateStrings(10).forEach(key -> metadata.put(key, RandomStringUtils.random(rand.nextInt(), true, true)));
-            generateStrings(12).forEach(key -> resultSet.put(key, RandomStringUtils.random(rand.nextInt(), true, true)));
+            generateStrings(10).forEach(key -> metadata.put(key, RandomStringUtils.random(5, true, true)));
+            generateStrings(12).forEach(key -> resultSet.put(key, RandomStringUtils.random(4, true, true)));
 
             return new TaskResult(taskId, metadata, resultSet);
         } catch (InterruptedException e) {
@@ -55,8 +55,9 @@ public class TaskResult implements Serializable {
 
         List<String> result = new ArrayList<>();
 
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < size; i++) {
             result.add(RandomStringUtils.random(length, useLetters, useNumbers));
+        }
 
         return result;
     }
