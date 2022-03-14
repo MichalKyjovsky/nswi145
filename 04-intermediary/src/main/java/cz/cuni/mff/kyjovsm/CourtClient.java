@@ -1,49 +1,59 @@
 package cz.cuni.mff.kyjovsm;
 
-import java.net.URL;
+import java.io.IOException;
 import javax.xml.namespace.QName;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.xml.soap.*;
 import jakarta.servlet.http.HttpServlet;
 
-import jakarta.xml.ws.Service;
-import cz.cuni.mff.kyjovsm.court.Court;
+@WebServlet("/intermediary")
+public class CourtClient extends HttpServlet {
 
-public class CourtClient {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        try {
+            SOAPConnectionFactory soapcf = SOAPConnectionFactory.newInstance();
+            SOAPConnection soapc = soapcf.createConnection();
 
-    public static void main(String[] args) throws Exception {
-        SOAPConnectionFactory soapcf = SOAPConnectionFactory.newInstance();
-        SOAPConnection soapc = soapcf.createConnection();
+            MessageFactory mf = MessageFactory.newInstance();
+            SOAPMessage soapm = mf.createMessage(new MimeHeaders(), request.getInputStream());
 
-        MessageFactory mf = MessageFactory.newInstance();
-        SOAPMessage soapm = mf.createMessage();
+            SOAPPart soapp = soapm.getSOAPPart();
+            SOAPEnvelope soape = soapp.getEnvelope();
+            SOAPBody soapb = soape.getBody();
 
-        SOAPPart soapp = soapm.getSOAPPart();
-        SOAPEnvelope soape = soapp.getEnvelope();
-        SOAPBody soapb = soape.getBody();
+            SOAPHeader header = soapm.getSOAPHeader();
 
-        soape.getHeader().detachNode();
-        QName name = new QName("http://court.kyjovsm.mff.cuni.cz/", "archiveClient", "court");
-        SOAPElement soapel = soapb.addBodyElement(name);
+//            Header removal
+//            header.detachNode();
 
-        soapel.addChildElement(
-                new QName("http://court.kyjovsm.mff.cuni.cz/", "arg0")).addTextNode("666");
-        String endpoint = "http://127.0.0.1:8000/Court";
-        SOAPMessage response = soapc.call(soapm, endpoint);
-        SOAPBody responseBody = response.getSOAPBody();
 
-        if (responseBody.hasFault()) {
-            System.out.println(responseBody.getFault().getFaultString());
-        } else {
+            QName name = new QName("http://court.kyjovsm.mff.cuni.cz/", "archiveClient", "court");
+            SOAPElement soapel = soapb.addBodyElement(name);
 
-            QName result = new QName("http://court.kyjovsm.mff.cuni.cz/", "result");
+            soapel.addChildElement(
+                    new QName("", "arg0")).addTextNode("666");
+            String endpoint = "http://127.0.0.1:8000/Court";
+            SOAPMessage soapResponse = soapc.call(soapm, endpoint);
+            SOAPBody responseBody = soapResponse.getSOAPBody();
 
-            SOAPBodyElement finalResponse = (SOAPBodyElement)
-                    responseBody.getChildElements(result).next();
+            if (responseBody.hasFault()) {
+                System.out.println(responseBody.getFault().getFaultString());
+            } else {
 
-            System.out.println(finalResponse.getValue());
+                QName result = new QName("http://court.kyjovsm.mff.cuni.cz/", "result");
+
+                SOAPBodyElement finalResponse = (SOAPBodyElement)
+                        responseBody.getChildElements(result).next();
+
+                System.out.println(finalResponse.getValue());
+            }
+            soapc.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        soapc.close();
     }
 }
