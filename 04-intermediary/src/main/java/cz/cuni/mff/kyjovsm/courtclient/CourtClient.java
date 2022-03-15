@@ -1,19 +1,38 @@
-package cz.cuni.mff.kyjovsm;
-
-import java.io.IOException;
-import javax.xml.namespace.QName;
+package cz.cuni.mff.kyjovsm.courtclient;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.xml.soap.*;
-import jakarta.servlet.http.HttpServlet;
 
-@WebServlet("/intermediary")
+import javax.xml.namespace.QName;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+@WebServlet(name = "courtClient", value = "/intermediary")
 public class CourtClient extends HttpServlet {
+    private String message;
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    public void init() {
+        System.out.println("It hecking works!");
+        message = "Hello World!";
+    }
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/html");
+
+        // Hello
+        PrintWriter out = response.getWriter();
+        out.println("<html><body>");
+        out.println("<h1>" + message + "</h1>");
+        out.println("</body></html>");
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("It hecking works!");
         try {
             SOAPConnectionFactory soapcf = SOAPConnectionFactory.newInstance();
             SOAPConnection soapc = soapcf.createConnection();
@@ -55,5 +74,8 @@ public class CourtClient extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void destroy() {
     }
 }
