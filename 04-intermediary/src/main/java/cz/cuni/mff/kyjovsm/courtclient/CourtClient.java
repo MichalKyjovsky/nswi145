@@ -10,9 +10,17 @@ import jakarta.xml.soap.*;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @WebServlet(name = "courtClient", value = "/intermediary")
 public class CourtClient extends HttpServlet {
+
+    private final List<String> KNOWN_AUTH_METHODS = List.of("kerberos", "openapi", "oauth2");
+
+    private static final String DEFAULT_AUTH_POLICY = "kerberos";
+
     private String message;
 
     @Override
@@ -40,37 +48,74 @@ public class CourtClient extends HttpServlet {
             MessageFactory mf = MessageFactory.newInstance();
             SOAPMessage soapm = mf.createMessage(new MimeHeaders(), request.getInputStream());
 
-            SOAPPart soapp = soapm.getSOAPPart();
-            SOAPEnvelope soape = soapp.getEnvelope();
-            SOAPBody soapb = soape.getBody();
-
             SOAPHeader header = soapm.getSOAPHeader();
 
-//            Header removal
-//            header.detachNode();
+            QName auth_policy = new QName("http://court.kyjovsm.mff.cuni.cz/", "policy");
+
+            String policyType;
 
 
-            QName name = new QName("http://court.kyjovsm.mff.cuni.cz/", "archiveClient", "court");
-            SOAPElement soapel = soapb.addBodyElement(name);
+            if (header.hasChildNodes()) {
+                Node n = header.getChildElements(auth_policy).next();
 
-            soapel.addChildElement(
-                    new QName("", "arg0")).addTextNode("666");
+                policyType = n.getAttributes().getNamedItem("policyType").getNodeValue();
+
+                if (policyType != null && this.KNOWN_AUTH_METHODS.contains(policyType)) {
+                    System.out.printf("Policy type set to: %s%n", policyType);
+                } else {
+                    System.out.println("Unsupported or null security policy used.");
+                    System.out.printf("Using default security policy... %s", DEFAULT_AUTH_POLICY);
+                }
+
+                header.removeChild(n);
+            } else {
+                System.out.println("No soap header provided");
+            }
+
             String endpoint = "http://127.0.0.1:8000/Court";
+            LocalDateTime archivingDate = LocalDateTime.now();
             SOAPMessage soapResponse = soapc.call(soapm, endpoint);
+            soapc.close();
+
             SOAPBody responseBody = soapResponse.getSOAPBody();
 
             if (responseBody.hasFault()) {
                 System.out.println(responseBody.getFault().getFaultString());
             } else {
 
-                QName result = new QName("http://court.kyjovsm.mff.cuni.cz/", "result");
+                QName result = new QName("http://court.kyjovsm.mff.cuni.cz/", "archiveClientResponse", "ns2");
+
 
                 SOAPBodyElement finalResponse = (SOAPBodyElement)
                         responseBody.getChildElements(result).next();
 
-                System.out.println(finalResponse.getValue());
+                SOAPBodyElement finalResponseValue = (SOAPBodyElement)
+                        finalResponse.getChildElements().next();
+
+                if (!finalResponseValue.getValue().isEmpty() && finalResponseValue.getValue().equals("true")) {
+
+                    System.out.println("Client was archived");
+
+                    QName archivingTimeStamp = new QName("http://court.kyjovsm.mff.cuni.cz/", "timestamp");
+
+                    if (soapResponse.getSOAPHeader() != null) {
+                        soapResponse.getSOAPHeader().addHeaderElement(archivingTimeStamp).addTextNode("Date and time of client archiving: " + archivingDate.format(DateTimeFormatter.ISO_DATE_TIME));
+                    } else {
+                        SOAPHeader newHeader = soapResponse.getSOAPPart().getEnvelope().addHeader();
+                        newHeader.addHeaderElement(archivingTimeStamp).addTextNode("Date and time of client archiving: " + archivingDate.format(DateTimeFormatter.ISO_DATE_TIME));
+                    }
+                } else {
+                    QName errorMessage = new QName("http://court.kyjovsm.mff.cuni.cz/", "error");
+
+                    if (soapResponse.getSOAPHeader() != null) {
+                        soapResponse.getSOAPHeader().addHeaderElement(errorMessage).addTextNode("Archiving of the client failed: " + archivingDate.format(DateTimeFormatter.ISO_DATE_TIME));
+                    } else {
+                        SOAPHeader newHeader = soapResponse.getSOAPPart().getEnvelope().addHeader();
+                        newHeader.addHeaderElement(errorMessage).addTextNode("Archiving of the client failed: " + archivingDate.format(DateTimeFormatter.ISO_DATE_TIME));
+                    }
+                }
+                soapResponse.writeTo(response.getOutputStream());
             }
-            soapc.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
