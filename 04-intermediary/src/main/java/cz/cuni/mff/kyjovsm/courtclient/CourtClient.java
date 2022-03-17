@@ -25,8 +25,7 @@ public class CourtClient extends HttpServlet {
 
     @Override
     public void init() {
-        System.out.println("It hecking works!");
-        message = "Hello World!";
+        message = "NSWI145 - Homework No.4 - SAAJ Client";
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -40,7 +39,6 @@ public class CourtClient extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("It hecking works!");
         try {
             SOAPConnectionFactory soapcf = SOAPConnectionFactory.newInstance();
             SOAPConnection soapc = soapcf.createConnection();
@@ -55,9 +53,11 @@ public class CourtClient extends HttpServlet {
             String policyType;
 
 
+            // Check whether the header is present
             if (header.hasChildNodes()) {
                 Node n = header.getChildElements(auth_policy).next();
 
+                // If so, then check the security policy attribute
                 policyType = n.getAttributes().getNamedItem("policyType").getNodeValue();
 
                 if (policyType != null && this.KNOWN_AUTH_METHODS.contains(policyType)) {
@@ -73,7 +73,11 @@ public class CourtClient extends HttpServlet {
             }
 
             String endpoint = "http://127.0.0.1:8000/Court";
+
+            // Record the timestamp of processing
             LocalDateTime archivingDate = LocalDateTime.now();
+
+            // Call the service
             SOAPMessage soapResponse = soapc.call(soapm, endpoint);
             soapc.close();
 
@@ -83,6 +87,7 @@ public class CourtClient extends HttpServlet {
                 System.out.println(responseBody.getFault().getFaultString());
             } else {
 
+                // Get the response from the service
                 QName result = new QName("http://court.kyjovsm.mff.cuni.cz/", "archiveClientResponse", "ns2");
 
 
@@ -92,6 +97,7 @@ public class CourtClient extends HttpServlet {
                 SOAPBodyElement finalResponseValue = (SOAPBodyElement)
                         finalResponse.getChildElements().next();
 
+                // Attach the timestamp information
                 if (!finalResponseValue.getValue().isEmpty() && finalResponseValue.getValue().equals("true")) {
 
                     System.out.println("Client was archived");
@@ -114,6 +120,7 @@ public class CourtClient extends HttpServlet {
                         newHeader.addHeaderElement(errorMessage).addTextNode("Archiving of the client failed: " + archivingDate.format(DateTimeFormatter.ISO_DATE_TIME));
                     }
                 }
+                // Send back to the user
                 soapResponse.writeTo(response.getOutputStream());
             }
         } catch (Exception e) {
