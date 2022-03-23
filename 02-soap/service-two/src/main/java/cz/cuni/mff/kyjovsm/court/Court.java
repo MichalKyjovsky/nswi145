@@ -1,7 +1,7 @@
 package cz.cuni.mff.kyjovsm.court;
 
-import jakarta.jws.WebMethod;
-import jakarta.jws.WebService;
+import javax.jws.WebMethod;
+import javax.jws.WebService;
 
 /**
  * The interface representing the Court services.

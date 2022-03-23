@@ -18,13 +18,17 @@ public class TaskResult implements Serializable {
 
     private HashMap<String, String> resultSet;
 
-    private TaskResult(String taskId) {
+    public TaskResult() {
+        //NOP
+    }
+
+    public TaskResult(String taskId) {
         this.taskId = taskId;
         this.metadata = new HashMap<>();
         this.resultSet = new HashMap<>();
     }
 
-    private TaskResult(String taskId, HashMap<String, String> metadata, HashMap<String, String> resultSet) {
+    public TaskResult(String taskId, HashMap<String, String> metadata, HashMap<String, String> resultSet) {
         this.taskId = taskId;
         this.metadata = metadata;
         this.resultSet = resultSet;

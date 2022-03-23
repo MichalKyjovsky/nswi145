@@ -1,7 +1,7 @@
 package cz.cuni.mff.kyjovsm.court;
 
 
-import jakarta.jws.WebService;
+import javax.jws.WebService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
