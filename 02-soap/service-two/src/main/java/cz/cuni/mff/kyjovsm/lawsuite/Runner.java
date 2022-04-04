@@ -1,4 +1,4 @@
-package cz.cuni.mff.kyjovsm.court;
+package cz.cuni.mff.kyjovsm.lawsuite;
 
 import javax.xml.ws.Endpoint;
 

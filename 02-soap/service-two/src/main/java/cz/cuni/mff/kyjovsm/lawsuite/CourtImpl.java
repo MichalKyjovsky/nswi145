@@ -1,4 +1,4 @@
-package cz.cuni.mff.kyjovsm.court;
+package cz.cuni.mff.kyjovsm.lawsuite;
 
 
 import javax.jws.WebService;
@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Objects;
 
-@WebService(endpointInterface = "cz.cuni.mff.kyjovsm.court.Court")
+@WebService(endpointInterface = "cz.cuni.mff.kyjovsm.lawsuite.Court")
 public class CourtImpl implements Court {
 
     private static final Logger LOGGER = LogManager.getLogger();

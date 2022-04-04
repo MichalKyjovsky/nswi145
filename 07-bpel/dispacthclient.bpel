@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--TODO: Define the WS BPEL -->
+
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/">
+    <documentation> ... </documentation>
+    <!-- types (0,1) -->
+    <types> ... </types>
+    <!-- messages (0,*) -->
+    <message> ... </message>
+    <!-- port types (0,*) -->
+    <portType> ... </portType>
+    <!-- bindings (0,*) -->
+    <binding> ... </binding>
+    <!-- services (0,*) -->
+    <service> ... </service>
+</definitions>

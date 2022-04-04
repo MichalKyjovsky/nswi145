@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://court.kyjovsm.mff.cuni.cz/"
+             xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://court.kyjovsm.mff.cuni.cz/" name="CourtImplService">
+    <types>
+        <documentation>WSDL Specification to the Court Service</documentation>
+
+        <!-- types (0,1) -->
+        <xs:schema xmlns:tns="http://court.kyjovsm.mff.cuni.cz/"
+                   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                   targetNamespace="http://court.kyjovsm.mff.cuni.cz/">
+            <xs:element name="archiveClient" type="tns:archiveClient"/>
+            <xs:element name="archiveClientResponse" type="tns:archiveClientResponse"/>
+            <xs:element name="registerClient" type="tns:registerClient"/>
+            <xs:element name="registerClientResponse" type="tns:registerClientResponse"/>
+            <xs:complexType name="archiveClient">
+                <xs:sequence>
+                    <xs:element name="arg0" type="xs:int" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="archiveClientResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="xs:boolean"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="registerClient">
+                <xs:sequence>
+                    <xs:element name="arg0" type="xs:int" minOccurs="0"/>
+                    <xs:element name="arg1" type="xs:string" minOccurs="0"/>
+                    <xs:element name="arg2" type="xs:int" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="registerClientResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="tns:client" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="client">
+                <xs:sequence>
+                    <xs:element name="age" type="xs:int"/>
+                    <xs:element name="id" type="xs:int"/>
+                    <xs:element name="name" type="xs:string" minOccurs="0"/>
+                </xs:sequence>
+            </xs:complexType>
+        </xs:schema>
+    </types>
+
+    <!-- messages (0,*) -->
+    <message name="registerClient">
+        <part name="parameters" element="tns:registerClient"/>
+    </message>
+    <message name="registerClientResponse">
+        <part name="parameters" element="tns:registerClientResponse"/>
+    </message>
+    <message name="archiveClient">
+        <part name="parameters" element="tns:archiveClient"/>
+    </message>
+    <message name="archiveClientResponse">
+        <part name="parameters" element="tns:archiveClientResponse"/>
+    </message>
+
+    <!-- port types (0,*) -->
+    <portType name="CourtPortType">
+        <operation name="registerClient">
+            <input  message="tns:registerClient"/>
+            <output  message="tns:registerClientResponse"/>
+        </operation>
+        <operation name="archiveClient">
+            <input  message="tns:archiveClient"/>
+            <output  message="tns:archiveClientResponse"/>
+        </operation>
+    </portType>
+
+    <!-- bindings (0,*) -->
+    <binding name="CourtImplPortBinding" type="tns:CourtPortType">
+        <wsdlsoap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="registerClient">
+            <wsdlsoap:operation soapAction=""/>
+            <input>
+                <wsdlsoap:body use="literal"/>
+            </input>
+            <output>
+                <wsdlsoap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="archiveClient">
+            <wsdlsoap:operation soapAction=""/>
+            <input>
+                <wsdlsoap:body use="literal"/>
+            </input>
+            <output>
+                <wsdlsoap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="CourtImplService">
+        <port name="CourtImplPort" binding="tns:CourtImplPortBinding">
+            <wsdlsoap:address location="http://127.0.0.1:8000/Court"/>
+        </port>
+    </service>
+</definitions>
