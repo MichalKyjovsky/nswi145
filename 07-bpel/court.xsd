@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:tns="http://kyjovsm.mff.cuni.cz/court"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://kyjovsm.mff.cuni.cz/court">
+    <xs:element name="archiveClient" type="tns:archiveClient"/>
+    <xs:element name="archiveClientResponse" type="tns:archiveClientResponse"/>
+    <xs:element name="registerClient" type="tns:registerClient"/>
+    <xs:element name="registerClientResponse" type="tns:registerClientResponse"/>
+    <xs:complexType name="archiveClient">
+        <xs:sequence>
+            <xs:element name="arg0" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="archiveClientResponse">
+        <xs:sequence>
+            <xs:element name="return" type="xs:boolean"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="registerClient">
+        <xs:sequence>
+            <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+            <xs:element name="arg1" type="xs:string" minOccurs="0"/>
+            <xs:element name="arg2" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="registerClientResponse">
+        <xs:sequence>
+            <xs:element name="return" type="tns:client" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="client">
+        <xs:sequence>
+            <xs:element name="age" type="xs:int"/>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

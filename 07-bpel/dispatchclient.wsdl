@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                   xmlns:tns="http://kyjovsm.mff.cuni.cz/hw7/wsdl"
                   xmlns:tnsxsd="http://kyjovsm.mff.cuni.cz/hw7/xsd"
                   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
@@ -11,12 +12,13 @@
     <!-- TODO: Provide the business process documentation    -->
     <wsdl:documentation></wsdl:documentation>
 
-    <wsdl:import namespace="http://kyjovsm.mff.cuni.cz/lawsuit" location="lawsuit.xml"/>
-    <wsdl:import namespace="http://kyjovsm.mff.cuni.cz/court" location="court.xml"/>
+    <wsdl:import namespace="http://kyjovsm.mff.cuni.cz/lawsuit" location="lawsuit.wsdl"/>
+    <wsdl:import namespace="http://kyjovsm.mff.cuni.cz/court" location="court.wsdl"/>
 
     <!-- types (0,1) -->
     <wsdl:types>
-        <xsd:schema targetNamespace="http://kyjovsm.mff.cuni.cz/hw7/xsd">
+        <xsd:schema targetNamespace="http://kyjovsm.mff.cuni.cz/hw7/xsd"
+                    xmlns:lawsuit="http://kyjovsm.mff.cuni.cz/lawsuit">
             <xsd:element name="dispatchIn">
                 <xsd:complexType>
                     <xsd:sequence>
@@ -29,8 +31,8 @@
             <xsd:element name="dispatchOut">
                 <xsd:complexType>
                     <xsd:sequence>
-                        <xsd:element name="statusOut" type="xsd:string"/>
-                        <xsd:element name="timeOfProcedureOut" type="xsd:dateTime"/>
+                        <xsd:element name="statusOut" type="lawsuit:report"/>
+                        <xsd:element name="clientRegistrationStatus" type="xsd:boolean"/>
                     </xsd:sequence>
                 </xsd:complexType>
             </xsd:element>
@@ -62,7 +64,13 @@
 
     <wsdl:portType name="EvaluateClientPortType">
         <wsdl:operation name="getClientEvaluationOperation">
-            <wsdl:input message="lawsuite:reviewClientsDataResponse" name="ClientEvaluationInput"/>
+            <wsdl:input message="lawsuit:reviewClientsDataResponse" name="ClientEvaluationInput"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:portType name="RollBackToClientPortType">
+        <wsdl:operation name="rollbackToClientOperation">
+            <wsdl:input message="lawsuit:rollbackToClientResponse" name="RollBackToClientInput"/>
         </wsdl:operation>
     </wsdl:portType>
 
@@ -109,6 +117,16 @@
         </wsdl:operation>
     </wsdl:binding>
 
+    <wsdl:binding name="RollBackToClientSOAPBinding" type="tns:RollBackToClientPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="rollbackToClientOperation">
+            <soap:operation soapAction="urn:rollbackToClientOperation" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+
     <!-- COURT: BINDING -->
     <wsdl:binding name="RegisterClientToCourtSOAPBinding" type="tns:RegisterClientToCourtPortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -123,7 +141,7 @@
     <!-- services (0,*) -->
     <wsdl:service name="FinalizeClientService">
         <wsdl:port name="FinalizeClientPort" binding="tns:FinalizeClientSOAPBinding">
-            <soap:address location="http://127.0.0.1/ode/processes/ProvideClientEvidence"/>
+            <soap:address location="http://127.0.0.1/ode/processes/FinalizeClientProcess"/>
         </wsdl:port>
 
         <!-- LAWSUIT: PORTS -->
@@ -135,6 +153,10 @@
             <soap:address location="http://localhost:8080/ode/processes/GetEvaluationForClient"/>
         </wsdl:port>
 
+        <wsdl:port name="RollBackToClientPort" binding="RollBackToClientSOAPBinding">
+            <soap:address location="http://localhost:8080/ode/processes/RollBackToClient"/>
+        </wsdl:port>
+
         <!-- COURT: PORT -->
         <wsdl:port name="RegisterClientToCourtPort" binding="RegisterClientToCourtSOAPBinding">
             <soap:address location="http://localhost:8080/ode/processes/RegisterClientToCourt"/>
@@ -143,25 +165,30 @@
     </wsdl:service>
 
     <!-- link types (0, *)  -->
-    <plnk:partnerLinkType name="ProvideEvidenceLinkType">
-        <plnk:role name="ProvideEvidenceExecutorRole" portType="tns:ProvideEvidencePortType"/>
+    <plnk:partnerLinkType name="FinalizeClientLinkType">
+        <plnk:role name="FinalizeClientExecutorRole" portType="tns:FinalizeClientPortType"/>
     </plnk:partnerLinkType>
 
 
     <!-- LAWSUIT: LINK TYPES -->
     <plnk:partnerLinkType name="GetReportLinkType">
         <plnk:role name="GetReportRole" portType="lawsuit:LawSuite"/>
-        <plnk:role name="GetReportRoleClient" portType="tns:GetReportPortType" />
+        <plnk:role name="GetReportRoleClient" portType="tns:GetReportPortType"/>
     </plnk:partnerLinkType>
 
     <plnk:partnerLinkType name="GetClientEvaluationLinkType">
         <plnk:role name="GetClientEvaluationRole" portType="lawsuit:LawSuite"/>
-        <plnk:role name="GetClientEvaluationRoleClient" portType="tns:EvaluateClientPortType" />
+        <plnk:role name="GetClientEvaluationRoleClient" portType="tns:EvaluateClientPortType"/>
+    </plnk:partnerLinkType>
+
+    <plnk:partnerLinkType name="RollBackToClientLinkType">
+        <plnk:role name="RollBackToClientRole" portType="lawsuit:LawSuite"/>
+        <plnk:role name="RollBackToClientRoleClient" portType="tns:RollBackToClientPortType"/>
     </plnk:partnerLinkType>
 
     <!-- COURT: LINK TYPE -->
     <plnk:partnerLinkType name="RegisterClientToCourtLinkType">
         <plnk:role name="RegisterClientToCourtRole" portType="court:Court"/>
-        <plnk:role name="RegisterClientToCourtRoleClient" portType="tns:RegisterClientToCourtPortType" />
+        <plnk:role name="RegisterClientToCourtRoleClient" portType="tns:RegisterClientToCourtPortType"/>
     </plnk:partnerLinkType>
 </wsdl:definitions>

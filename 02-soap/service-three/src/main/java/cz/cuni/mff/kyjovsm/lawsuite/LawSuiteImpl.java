@@ -60,6 +60,19 @@ public class LawSuiteImpl implements LawSuite {
     }
 
     @Override
+    public boolean rollbackToClient(Report report) {
+        LOGGER.info("SENDING REPORT TO THE CLIENT: {}.", report.getClient());
+        LOGGER.info("DISCREPANCIES WERE OBSERVED");
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            LOGGER.error("ERROR DURING REPORTING TO CLIENT: {}", report.getClient());
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public Report createReport(String clientID) {
         return new Report(Client.getClientByID(clientID));
     }

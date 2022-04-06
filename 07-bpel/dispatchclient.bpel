@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <process name="FinalizeClientProcess"
-         targetNamespace="http://kyjovsm.ms.mff.cuni.cz/hw7/bpel"
+         targetNamespace="http://kyjovsm.mff.cuni.cz/hw7/bpel"
          xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
-         xmlns:tns="http://kyjovsm.ms.mff.cuni.cz/hw7/bpel"
-         xmlns:tnswsdl="http://kyjovsm.ms.mff.cuni.cz/hw7/wsdl"
+         xmlns:tns="http://kyjovsm.mff.cuni.cz/hw7/bpel"
+         xmlns:tnswsdl="http://kyjovsm.mff.cuni.cz/hw7/wsdl"
          xmlns:xsd="http://www.w3.org/2001/XMLSchema"
          xmlns:court="http://kyjovsm.mff.cuni.cz/court"
          xmlns:lawsuit="http://kyjovsm.mff.cuni.cz/lawsuit"
@@ -11,15 +11,15 @@
          expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
 
 
-    <import location="dispatchclient.xml"
-            namespace="http://kyjovsm.ms.mff.cuni.cz/hw7/wsdl"
-            importType="http://schemas.xmlsoap.org/wsdl"/>
+    <import location="dispatchclient.wsdl"
+            namespace="http://kyjovsm.mff.cuni.cz/hw7/wsdl"
+            importType="http://schemas.xmlsoap.org/wsdl/"/>
 
     <partnerLinks>
         <partnerLink
                 name="FinalizeClientLink"
-                partnerLinkType="tnswsdl:ProvideEvidenceLinkType"
-                myRole="ProvideEvidenceExecutorRole"/>
+                partnerLinkType="tnswsdl:FinalizeClientLinkType"
+                myRole="FinalizeClientExecutorRole"/>
 
         <!-- LAWSUIT: PARTNER LINKS -->
         <partnerLink
@@ -32,6 +32,11 @@
                 partnerLinkType="tnswsdl:GetClientEvaluationLinkType"
                 myRole="GetClientEvaluationRoleClient"
                 partnerRole="GetClientEvaluationRole"/>
+        <partnerLink
+                name="RollBackToClientLink"
+                partnerLinkType="tnswsdl:RollBackToClientLinkType"
+                myRole="RollBackToClientRoleClient"
+                partnerRole="RollBackToClientRole"/>
 
         <!-- COURT: PARTNER LINK -->
         <partnerLink
@@ -44,6 +49,8 @@
     <variables>
         <variable name="inputMessage" messageType="tnswsdl:ProvideEvidenceInputMessage"/>
         <variable name="outputMessage" messageType="tnswsdl:ProvideEvidenceOutputMessage"/>
+
+        <variable name="outputMessageElement" element="tnswsdl:ProvideEvidenceOutputMessage"/>
 
         <variable name="legalCaseIDIn" type="xsd:string"/>
         <variable name="clientIDIn" type="xsd:string"/>
@@ -59,6 +66,10 @@
         <variable name="getClientEvaluationElement" element="lawsuit:reviewClientsData"/>
         <variable name="getClientEvaluationRequest" messageType="lawsuit:reviewClientsData"/>
         <variable name="getClientEvaluationResponse" messageType="lawsuit:reviewClientsDataResponse"/>
+
+        <variable name="rollBackToClientElement" element="lawsuit:rollbackToClient"/>
+        <variable name="rollBackToClientRequest" messageType="lawsuit:rollbackToClient"/>
+        <variable name="rollBackToClientResponse" messageType="lawsuit:rollbackToClientResponse"/>
 
         <variable name="registerClientToCourtElement" element="court:registerClient"/>
         <variable name="registerClientToCourtRequest" messageType="court:registerClient"/>
@@ -221,7 +232,7 @@
                     </copy>
                     <copy>
                         <from variable="registerClientToCourtElement"/>
-                        <to variable="registerClientToCourtRequest"/>
+                        <to variable="registerClientToCourtRequest" part="parameters"/>
                     </copy>
                 </assign>
 
@@ -243,11 +254,61 @@
                 <!-- There was an error during the processing of client and lawsuit needs extra data from the client
                  or the litigators                -->
                 <sequence>
+                    <assign name="InitRollBackToClient">
+                        <copy>
+                            <from>
+                                <literal>
+                                    <lawsuit:rollbackToClient>
+                                        <lawsuit:arg0></lawsuit:arg0>
+                                    </lawsuit:rollbackToClient>
+                                </literal>
+                            </from>
+                            <to variable="rollBackToClientElement"/>
+                        </copy>
+                        <copy>
+                            <from>$currentClientReport</from>
+                            <to>$rollBackToClientElement//lawsuit:arg0</to>
+                        </copy>
+                        <copy>rollback
+                            <from variable="rollBackToClientElement"/>
+                            <to variable="rollBackToClientRequest" part="parameters"/>
+                        </copy>
+                    </assign>
 
+                    <invoke name="InvokeRollBackToClient"
+                            partnerLink="RollBackToClientLink"
+                            operation="rollbackToClient"
+                            inputVariable="rollBackToClientRequest"
+                            outputVariable="rollBackToClientResponse"/>
                 </sequence>
             </else>
-
         </if>
+
+        <assign name="FinalResponse">
+            <copy>
+                <from>
+                    <literal>
+                        <tnswsdl:dispatchOut>
+                            <tnswsdl:statusOut></tnswsdl:statusOut>
+                            <tnswsdl:clientRegistrationStatus></tnswsdl:clientRegistrationStatus>
+                        </tnswsdl:dispatchOut>
+                    </literal>
+                </from>
+                <to variable="outputMessageElement"/>
+            </copy>
+            <copy>
+                <from>$currentClientEligibilityState</from>
+                <to>$outputMessageElement//tnswsdl:statusOut</to>
+            </copy>
+            <copy>
+                <from>$currentClientReport</from>
+                <to>$outputMessageElement//tnswsdl:clientRegistrationStatus</to>
+            </copy>
+            <copy>
+                <from variable="outputMessageElement"/>
+                <to variable="outputMessage" part="parameters"/>
+            </copy>
+        </assign>
 
         <reply
                 name="ReplyClientFinalization"

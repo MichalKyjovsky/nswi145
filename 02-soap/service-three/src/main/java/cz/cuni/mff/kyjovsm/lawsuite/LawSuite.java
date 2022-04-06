@@ -24,6 +24,9 @@ public interface LawSuite {
     @WebMethod
     Report createReport(String clientID);
 
+    @WebMethod
+    boolean rollbackToClient(Report report);
+
     /**
      * @param clientID ID of the {@link Client} to be archived
      * @retur <code>true</code> if the archivaton was successful else <code>false</code>

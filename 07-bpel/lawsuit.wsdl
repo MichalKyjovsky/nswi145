@@ -15,6 +15,8 @@
             <xsd:element name="registerNewClientResponse" type="tns:registerNewClientResponse"/>
             <xsd:element name="reviewClientsData" type="tns:reviewClientsData"/>
             <xsd:element name="reviewClientsDataResponse" type="tns:reviewClientsDataResponse"/>
+            <xsd:element name="rollbackToClient" type="tns:rollbackToClient"/>
+            <xsd:element name="rollbackToClientResponse" type="tns:rollbackToClientResponse"/>
             <xsd:complexType name="archiveClient">
                 <xsd:sequence>
                     <xsd:element name="arg0" type="xsd:int" minOccurs="0"/>
@@ -79,6 +81,16 @@
                     <xsd:element name="return" type="xsd:boolean"/>
                 </xsd:sequence>
             </xsd:complexType>
+            <xsd:complexType name="rollbackToClient">
+                <xsd:sequence>
+                    <xsd:element name="arg0" type="tns:report" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="rollbackToClientResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="xsd:boolean"/>
+                </xsd:sequence>
+            </xsd:complexType>
             <xsd:simpleType name="clientState">
                 <xsd:restriction base="xsd:string">
                     <xsd:enumeration value="NEW_REGISTRATION"/>
@@ -119,6 +131,12 @@
     <message name="archiveClientResponse">
         <part name="parameters" element="tns:archiveClientResponse"/>
     </message>
+    <message name="rollbackToClient">
+        <part name="parameters" element="tns:rollbackToClient"/>
+    </message>
+    <message name="rollbackToClientResponse">
+        <part name="parameters" element="tns:rollbackToClientResponse"/>
+    </message>
     <message name="createReport">
         <part name="parameters" element="tns:createReport"/>
     </message>
@@ -141,6 +159,10 @@
         <operation name="archiveClient">
             <input message="tns:archiveClient"/>
             <output message="tns:archiveClientResponse"/>
+        </operation>
+        <operation name="rollbackToClient">
+            <input message="tns:rollbackToClient"/>
+            <output message="tns:rollbackToClientResponse"/>
         </operation>
         <operation name="createReport">
             <input message="tns:createReport"/>
@@ -177,6 +199,15 @@
             </output>
         </operation>
         <operation name="archiveClient">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="rollbackToClient">
             <soap:operation soapAction=""/>
             <input>
                 <soap:body use="literal"/>

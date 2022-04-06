@@ -4,7 +4,7 @@
     xmlns:tnsbpel="http://kyjovsm.mff.cuni.cz/hw7/bpel"
     xmlns:tnswsdl="http://kyjovsm.mff.cuni.cz/hw7/wsdl"
     xmlns:court="http://kyjovsm.mff.cuni.cz/court"
-    xmlns:lawsuit="http://kyjovsm.mff.cuni.cz/lawsuite">
+    xmlns:lawsuit="http://kyjovsm.mff.cuni.cz/lawsuit">
 
     <process name="tnsbpel:FinalizeClientProcess">
         <active>true</active>
@@ -20,6 +20,10 @@
             <service name="lawsuit:LawSuit" port="LawSuit"/>
         </invoke>
 
+        <invoke partnerLink="RollBackToClientLink">
+            <service name="lawsuit:LawSuit" port="LawSuit"/>
+        </invoke>
+
         <invoke partnerLink="RegisterClientToCourtLink">
             <service name="court:Court" port="Court"/>
         </invoke>
@@ -30,6 +34,10 @@
 
         <provide partnerLink="GetClientEvaluationLink">
             <service name="tnswsdl:FinalizeClientService" port="EvaluateClientPort"/>
+        </provide>
+
+        <provide partnerLink="RollbackToClientLink">
+            <service name="tnswsdl:FinalizeClientService" port="RollBackToClientPort"/>
         </provide>
 
         <provide partnerLink="RegisterClientToCourtLink">
