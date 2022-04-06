@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <definitions xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/"
-             xmlns:tns="http://court.kyjovsm.mff.cuni.cz/"
-             xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://court.kyjovsm.mff.cuni.cz/" name="CourtImplService">
+             xmlns:tns="http://kyjovsm.mff.cuni.cz/court"
+             xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://kyjovsm.mff.cuni.cz/court" name="CourtImplService">
     <types>
         <documentation>WSDL Specification to the Court Service</documentation>
 
         <!-- types (0,1) -->
-        <xs:schema xmlns:tns="http://court.kyjovsm.mff.cuni.cz/"
+        <xs:schema xmlns:tns="http://kyjovsm.mff.cuni.cz/court"
                    xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                   targetNamespace="http://court.kyjovsm.mff.cuni.cz/">
+                   targetNamespace="http://kyjovsm.mff.cuni.cz/court">
             <xs:element name="archiveClient" type="tns:archiveClient"/>
             <xs:element name="archiveClientResponse" type="tns:archiveClientResponse"/>
             <xs:element name="registerClient" type="tns:registerClient"/>

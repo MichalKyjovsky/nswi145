@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://kyjovsm.mff.cuni.cz/lawsuit"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/"
+             targetNamespace="http://kyjovsm.mff.cuni.cz/lawsuit"
+             name="LawSuiteImplService">
+    <types>
+        <xsd:schema xmlns:tns="http://kyjovsm.mff.cuni.cz/lawsuit" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://kyjovsm.mff.cuni.cz/lawsuit">
+            <xsd:element name="archiveClient" type="tns:archiveClient"/>
+            <xsd:element name="archiveClientResponse" type="tns:archiveClientResponse"/>
+            <xsd:element name="createReport" type="tns:createReport"/>
+            <xsd:element name="createReportResponse" type="tns:createReportResponse"/>
+            <xsd:element name="processClient" type="tns:processClient"/>
+            <xsd:element name="processClientResponse" type="tns:processClientResponse"/>
+            <xsd:element name="registerNewClient" type="tns:registerNewClient"/>
+            <xsd:element name="registerNewClientResponse" type="tns:registerNewClientResponse"/>
+            <xsd:element name="reviewClientsData" type="tns:reviewClientsData"/>
+            <xsd:element name="reviewClientsDataResponse" type="tns:reviewClientsDataResponse"/>
+            <xsd:complexType name="archiveClient">
+                <xsd:sequence>
+                    <xsd:element name="arg0" type="xsd:int" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="archiveClientResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="xsd:boolean"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="reviewClientsData">
+                <xsd:sequence>
+                    <xsd:element name="arg0" type="tns:report" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="report">
+                <xsd:sequence>
+                    <xsd:element name="client" type="tns:client" minOccurs="0"/>
+                    <xsd:element name="issuedClaims" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                    <xsd:element name="reportId" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="status" type="tns:reportStatus" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="client">
+                <xsd:sequence>
+                    <xsd:element name="age" type="xsd:int"/>
+                    <xsd:element name="clientState" type="tns:clientState" minOccurs="0"/>
+                    <xsd:element name="id" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="reviewClientsDataResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="xsd:boolean"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="createReport">
+                <xsd:sequence>
+                    <xsd:element name="arg0" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="createReportResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="tns:report" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="processClient">
+                <xsd:sequence>
+                    <xsd:element name="arg0" type="xsd:int" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="processClientResponse">
+                <xsd:sequence/>
+            </xsd:complexType>
+            <xsd:complexType name="registerNewClient">
+                <xsd:sequence>
+                    <xsd:element name="arg0" type="xsd:string" minOccurs="0"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="registerNewClientResponse">
+                <xsd:sequence>
+                    <xsd:element name="return" type="xsd:boolean"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="clientState">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="NEW_REGISTRATION"/>
+                    <xsd:enumeration value="IN_PROGRESS"/>
+                    <xsd:enumeration value="PROCESSED"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="reportStatus">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="TODO"/>
+                    <xsd:enumeration value="DATA_MISSING"/>
+                    <xsd:enumeration value="QUALIFIED"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:schema>
+    </types>
+    <message name="processClient">
+        <part name="parameters" element="tns:processClient"/>
+    </message>
+    <message name="processClientResponse">
+        <part name="parameters" element="tns:processClientResponse"/>
+    </message>
+    <message name="registerNewClient">
+        <part name="parameters" element="tns:registerNewClient"/>
+    </message>
+    <message name="registerNewClientResponse">
+        <part name="parameters" element="tns:registerNewClientResponse"/>
+    </message>
+    <message name="reviewClientsData">
+        <part name="parameters" element="tns:reviewClientsData"/>
+    </message>
+    <message name="reviewClientsDataResponse">
+        <part name="parameters" element="tns:reviewClientsDataResponse"/>
+    </message>
+    <message name="archiveClient">
+        <part name="parameters" element="tns:archiveClient"/>
+    </message>
+    <message name="archiveClientResponse">
+        <part name="parameters" element="tns:archiveClientResponse"/>
+    </message>
+    <message name="createReport">
+        <part name="parameters" element="tns:createReport"/>
+    </message>
+    <message name="createReportResponse">
+        <part name="parameters" element="tns:createReportResponse"/>
+    </message>
+    <portType name="LawSuite">
+        <operation name="processClient">
+            <input message="tns:processClient"/>
+            <output message="tns:processClientResponse"/>
+        </operation>
+        <operation name="registerNewClient">
+            <input message="tns:registerNewClient"/>
+            <output message="tns:registerNewClientResponse"/>
+        </operation>
+        <operation name="reviewClientsData">
+            <input message="tns:reviewClientsData"/>
+            <output message="tns:reviewClientsDataResponse"/>
+        </operation>
+        <operation name="archiveClient">
+            <input message="tns:archiveClient"/>
+            <output message="tns:archiveClientResponse"/>
+        </operation>
+        <operation name="createReport">
+            <input message="tns:createReport"/>
+            <output message="tns:createReportResponse"/>
+        </operation>
+    </portType>
+    <binding name="LawSuiteImplPortBinding" type="tns:LawSuite">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <operation name="processClient">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="registerNewClient">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="reviewClientsData">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="archiveClient">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="createReport">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="LawSuiteImplService">
+        <port name="LawSuiteImplPort" binding="tns:LawSuiteImplPortBinding">
+            <soap:address location="http://localhost:8000/LawSuite"/>
+        </port>
+    </service>
+</definitions>

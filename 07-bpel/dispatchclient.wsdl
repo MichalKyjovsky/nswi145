@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="http://kyjovsm.mff.cuni.cz/hw7/wsdl"
+                  xmlns:tnsxsd="http://kyjovsm.mff.cuni.cz/hw7/xsd"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+                  xmlns:plnk="http://docs.oasis-open.org/wsbpel/2.0/plnktype"
+                  xmlns:lawsuit="http://kyjovsm.mff.cuni.cz/lawsuit"
+                  xmlns:court="http://kyjovsm.mff.cuni.cz/court"
+                  targetNamespace="http://kyjovsm.mff.cuni.cz/hw7/wsdl">
+
+    <wsdl:documentation>  </wsdl:documentation>
+
+    <wsdl:import namespace="http://kyjovsm.mff.cuni.cz/lawsuit" location="lawsuit.xml"/>
+    <wsdl:import namespace="http://kyjovsm.mff.cuni.cz/court" location="court.xml"/>
+
+    <!-- types (0,1) -->
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://kyjovsm.mff.cuni.cz/hw7/xsd">
+            <xsd:element name="dispatchIn">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="legalCaseIDIn" type="xsd:string"/>
+                        <xsd:element name="clientIDIn" type="xsd:string"/>
+                        <xsd:element name="clientEvidenceURLIn" type="xsd:normalizedString"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="dispatchOut">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="statusOut" type="xsd:string"/>
+                        <xsd:element name="timeOfProcedureOut" type="xsd:dateTime"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </wsdl:types>
+    <!-- messages (0,*) -->
+    <wsdl:message name="ProvideEvidenceInputMessage">
+        <wsdl:part name="parameters" element="tnsxsd:dispatchIn"/>
+    </wsdl:message>
+    <wsdl:message name="ProvideEvidenceOutputMessage">
+        <wsdl:part name="parameters" element="tnsxsd:dispatchOut"/>
+    </wsdl:message>
+
+    <!-- port types (0,*) -->
+    <wsdl:portType name="FinalizeClientPortType">
+        <wsdl:operation name="provideClientEvidenceToLawsuit">
+            <wsdl:input message="tns:ProvideEvidenceInputMessage" name="ClientIn"/>
+            <wsdl:output message="tns:ProvideEvidenceOutputMessage" name="ClientOut"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <!-- LAWSUIT: PORT TYPE -->
+
+    <wsdl:portType name="GetReportPortType">
+        <wsdl:operation name="getReportOperation">
+            <wsdl:input message="lawsuit:createReportResponse" name="GetReportInput"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:portType name="EvaluateClientPortType">
+        <wsdl:operation name="getClientEvaluationOperation">
+            <wsdl:input message="lawsuite:reviewClientsData" name="ClientEvaluationInput"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <!-- COURT: PORT TYPE -->
+
+
+    <!-- bindings (0,*) -->
+    <wsdl:binding name="FinalizeClientSOAPBinding" type="FinalizeClientPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+        <wsdl:operation name="provideClientEvidenceToLawsuit">
+            <soap:operation soapAction="urn:provideClientEvidenceToLawsuit" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <!-- LAWSUIT: BINDING -->
+    <wsdl:binding name="GetReportSOAPBinding" type="tns:GetReportPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getReportOperation">
+            <soap:operation soapAction="urn:getReportOperation" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:binding name="EvaluateClientSOAPBinding" type="tns:EvaluateClientPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="getClientEvaluationOperation">
+            <soap:operation soapAction="urn:getClientEvaluationOperation" style="document"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <!-- COURT: BINDING -->
+    <!-- TODO: Add court registration    -->
+
+
+    <!-- services (0,*) -->
+    <wsdl:service name="FinalizeClientService">
+        <wsdl:port name="FinalizeClientPort" binding="tns:FinalizeClientSOAPBinding">
+            <soap:address location="http://127.0.0.1/ode/processes/ProvideClientEvidence"/>
+        </wsdl:port>
+
+        <!-- LAWSUIT: PORTS -->
+        <wsdl:port name="GetReportPort" binding="GetReportSOAPBinding">
+            <soap:address location="http://localhost:8080/ode/processes/GetReportForClient"/>
+        </wsdl:port>
+
+        <wsdl:port name="EvaluateClientPort" binding="EvaluateClientSOAPBinding">
+            <soap:address location="http://localhost:8080/ode/processes/GetEvaluationForClient"/>
+        </wsdl:port>
+    </wsdl:service>
+
+
+    <!-- LINK TYPES    -->
+
+    <plnk:partnerLinkType name="ProvideEvidenceLinkType">
+        <plnk:role name="ProvideEvidenceExecutorRole" portType="tns:ProvideEvidencePortType"/>
+    </plnk:partnerLinkType>
+
+
+    <!-- LAWSUIT: LINK TYPES -->
+    <plnk:partnerLinkType name="GetReportLinkType">
+        <plnk:role name="GetReportRole" portType="lawsuit:LawSuite"/>
+        <plnk:role name="GetReportRoleClient" portType="tns:GetReportPortType" />
+    </plnk:partnerLinkType>
+
+    <plnk:partnerLinkType name="GetClientEvaluationLinkType">
+        <plnk:role name="GetClientEvaluationRole" portType="lawsuit:LawSuite"/>
+        <plnk:role name="GetClientEvaluationRoleClient" portType="tns:EvaluateClientPortType" />
+    </plnk:partnerLinkType>
+
+    <!-- TODO: COURT: LINK TYPE -->
+    <plnk:partnerLinkType name="">
+
+    </plnk:partnerLinkType>
+</wsdl:definitions>

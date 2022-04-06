@@ -15,14 +15,14 @@ public interface LawSuite {
     @WebMethod
     void processClient(Integer clientID);
 
-
     @WebMethod
     boolean registerNewClient(String name);
-
 
     @WebMethod
     boolean reviewClientsData(Report report);
 
+    @WebMethod
+    Report createReport(String clientID);
 
     /**
      * @param clientID ID of the {@link Client} to be archived

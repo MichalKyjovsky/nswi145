@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<process name="FinalizeClientProcess"
+         targetNamespace="http://kyjovsm.ms.mff.cuni.cz/hw7/bpel"
+         xmlns="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
+         xmlns:tns="http://kyjovsm.ms.mff.cuni.cz/hw7/bpel"
+         xmlns:tnswsdl="http://kyjovsm.ms.mff.cuni.cz/hw7/wsdl"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         xmlns:court="http://kyjovsm.mff.cuni.cz/court"
+         xmlns:lawsuit="http://kyjovsm.mff.cuni.cz/lawsuit"
+         queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"
+         expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0">
+
+
+    <import location="dispatchclient.xml"
+            namespace="http://kyjovsm.ms.mff.cuni.cz/hw7/wsdl"
+            importType="http://schemas.xmlsoap.org/wsdl"/>
+
+    <partnerLinks>
+        <partnerLink
+                name="FinalizeClientLink"
+                partnerLinkType="tnswsdl:ProvideEvidenceLinkType"
+                myRole="ProvideEvidenceExecutorRole"/>
+        <partnerLink
+                name="GetReportLink"
+                partnerLinkType="tnswsdl:GetReportLinkType"
+                myRole="GetReportRoleClient"
+                partnerRole="GetReportRole"/>
+        <partnerLink
+                name="GetClientEvaluationLink"
+                partnerLinkType="tnswsdl:GetClientEvaluationLinkType"
+                myRole="GetClientEvaluationRoleClient"
+                partnerRole="GetClientEvaluationRole"/>
+    </partnerLinks>
+
+    <variables>
+        <variable name="inputMessage" messageType="tnswsdl:ProvideEvidenceInputMessage"/>
+        <variable name="outputMessage" messageType="tnswsdl:ProvideEvidenceOutputMessage"/>
+
+        <variable name="legalCaseIDIn" type="xsd:string"/>
+        <variable name="clientIDIn" type="xsd:string"/>
+        <variable name="clientEvidenceURLIn" type="xsd:normalizedString"/>
+
+        <variable name="createReportRequestElement" element="lawsuit:createReport"/>
+        <variable name="createReportRequest" messageType="lawsuit:createReport"/>
+        <variable name="createReportResponse" messageType="lawsuit:createReportResponse"/>
+
+        <variable name="getClientEvaluationElement" element="lawsuit:reviewClientsData"/>
+        <variable name="getClientEvaluationRequest" messageType="lawsuit:reviewClientsData"/>
+        <variable name="getClientEvaluationResponse" messageType="lawsuit:reviewClientsDataResponse"/>
+
+        <variable name="currentClientReport" type="lawsuit:report"/>
+        <variable name="currentClientReportElement" element="lawsuit:report"/>
+    </variables>
+
+    <sequence>
+        <receive name="ReceiveClientEvidence"
+                 partnerLink="FinalizeClientLink"
+                 portType="tnswsdl:FinalizeClientPortType"
+                 operation="provideClientEvidenceToLawsuit"
+                 variable="inputMessage"
+                 createInstance="yes"/>
+
+        <assign name="DispatchInput">
+            <copy>
+                <from>$inputMessage/legalCaseIDIn</from>
+                <to variable="legalCaseIDIn"/>
+            </copy>
+            <copy>
+                <from>$inputMessage/clientIDIn</from>
+                <to variable="clientIDIn"/>
+            </copy>
+            <copy>
+                <from>$inputMessage/clientEvidenceURLIn</from>
+                <to variable="clientEvidenceURLIn"/>
+            </copy>
+        </assign>
+
+        <assign name="InitGetReportRequest">
+            <copy>
+                <from>
+                    <literal>
+                        <lawsuit:createReport>
+                            <lawsuit:arg0></lawsuit:arg0>
+                        </lawsuit:createReport>
+                    </literal>
+                </from>
+                <to variable="createReportRequestElement"/>
+            </copy>
+            <copy>
+                <from>$clientIDIn</from>
+                <to>$createReportRequestElement//lawsuit:arg0</to>
+            </copy>
+            <copy>
+                <from variable="createReportRequestElement"/>
+                <to variable="createReportRequest" part="parameters"/>
+            </copy>
+        </assign>
+
+
+        <!-- Get the report for the given client        -->
+        <invoke name="InvokeGetReport"
+                partnerLink="GetReportLink"
+                operation="createReport"
+                inputVariable="createReportRequest"
+                outputVariable="createReportResponse"/>
+
+        <assign name="ProcessGetReportRequest">
+            <copy>
+                <from>$createReportResponse//lawsuit:return</from>
+                <to variable="currentClientReport"/>
+            </copy>
+        </assign>
+
+        <!-- Get client evaluation   -->
+
+        <assign>
+            <copy>
+                <from>
+                    <literal>
+                        <lawsuit:reviewClientsData>
+                            <lawsuit:arg0></lawsuit:arg0>
+                        </lawsuit:reviewClientsData>
+                    </literal>
+                </from>
+                <to variable="getClientEvaluationElement"/>
+            </copy>
+            <copy>
+                <from>$currentClientReport</from>
+                <to>$getClientEvaluationElement//lawsuit:arg0</to>
+            </copy>
+            <copy>
+                <from variable="getClientEvaluationElement"/>
+                <to variable="getClientEvaluationRequest" part="parameters"/>
+            </copy>
+        </assign>
+
+        <invoke name="InvokeClientEvaluation"
+                partnerLink="GetClientEvaluationLink"
+                operation="reviewClientsData"
+                inputVariable="getClientEvaluationRequest"
+                outputVariable="getClientEvaluationResponse"/>
+
+        <reply
+            name="ReplyClientFinalization"
+            partnerLink="FinalizeClientLink"
+            portType="tnswsdl:FinalizeClientPortType"
+            operation="provideClientEvidenceToLawsuit"
+            variable="outputMessage"/>
+    </sequence>
+
+</process>

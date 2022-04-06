@@ -2,6 +2,7 @@ package cz.cuni.mff.kyjovsm.lawsuite;
 
 import javax.jws.WebService;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,9 +59,14 @@ public class LawSuiteImpl implements LawSuite {
         return true;
     }
 
+    @Override
+    public Report createReport(String clientID) {
+        return new Report(Client.getClientByID(clientID));
+    }
+
     private Client saveClient(String name) throws InterruptedException {
         Client c = new Client();
-        c.setId(rand.nextInt());
+        c.setId(RandomStringUtils.random(20, true, false));
         c.setName(name);
         c.setAge(rand.nextInt(99));
         LOGGER.info("Saving the client: {}", c);

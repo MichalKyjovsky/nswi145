@@ -1,111 +1,99 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://lawsuite.kyjovsm.mff.cuni.cz/"
-             xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/"
              targetNamespace="http://lawsuite.kyjovsm.mff.cuni.cz/"
              name="LawSuiteImplService">
     <types>
-        <xs:schema xmlns:tns="http://lawsuite.kyjovsm.mff.cuni.cz/" xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                   version="1.0"
-                   targetNamespace="http://lawsuite.kyjovsm.mff.cuni.cz/">
-
-            <xs:element name="archiveClient" type="tns:archiveClient"/>
-
-            <xs:element name="archiveClientResponse" type="tns:archiveClientResponse"/>
-
-            <xs:element name="processClient" type="tns:processClient"/>
-
-            <xs:element name="processClientResponse" type="tns:processClientResponse"/>
-
-            <xs:element name="registerNewClient" type="tns:registerNewClient"/>
-
-            <xs:element name="registerNewClientResponse" type="tns:registerNewClientResponse"/>
-
-            <xs:element name="reviewClientsData" type="tns:reviewClientsData"/>
-
-            <xs:element name="reviewClientsDataResponse" type="tns:reviewClientsDataResponse"/>
-
-            <xs:complexType name="archiveClient">
-                <xs:sequence>
-                    <xs:element name="arg0" type="xs:int" minOccurs="0"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:complexType name="archiveClientResponse">
-                <xs:sequence>
-                    <xs:element name="return" type="xs:boolean"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:complexType name="reviewClientsData">
-                <xs:sequence>
-                    <xs:element name="arg0" type="tns:report" minOccurs="0"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:complexType name="report">
-                <xs:sequence>
-                    <xs:element name="client" type="tns:client" minOccurs="0"/>
-                    <xs:element name="issuedClaims" type="xs:string" nillable="true" minOccurs="0"
-                                maxOccurs="unbounded"/>
-                    <xs:element name="reportId" type="xs:string" minOccurs="0"/>
-                    <xs:element name="status" type="tns:reportStatus" minOccurs="0"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:complexType name="client">
-                <xs:sequence>
-                    <xs:element name="age" type="xs:int"/>
-                    <xs:element name="clientState" type="tns:clientState" minOccurs="0"/>
-                    <xs:element name="id" type="xs:int"/>
-                    <xs:element name="name" type="xs:string" minOccurs="0"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:complexType name="reviewClientsDataResponse">
-                <xs:sequence>
-                    <xs:element name="return" type="xs:boolean"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:complexType name="processClient">
-                <xs:sequence>
-                    <xs:element name="arg0" type="xs:int" minOccurs="0"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:complexType name="processClientResponse">
-                <xs:sequence/>
-            </xs:complexType>
-
-            <xs:complexType name="registerNewClient">
-                <xs:sequence>
-                    <xs:element name="arg0" type="xs:string" minOccurs="0"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:complexType name="registerNewClientResponse">
-                <xs:sequence>
-                    <xs:element name="return" type="xs:boolean"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:simpleType name="clientState">
-                <xs:restriction base="xs:string">
-                    <xs:enumeration value="NEW_REGISTRATION"/>
-                    <xs:enumeration value="IN_PROGRESS"/>
-                    <xs:enumeration value="PROCESSED"/>
-                </xs:restriction>
-            </xs:simpleType>
-
-            <xs:simpleType name="reportStatus">
-                <xs:restriction base="xs:string">
-                    <xs:enumeration value="TODO"/>
-                    <xs:enumeration value="DATA_MISSING"/>
-                    <xs:enumeration value="QUALIFIED"/>
-                </xs:restriction>
-            </xs:simpleType>
-        </xs:schema>
-
+        <xsd:schema xmlns:tns="http://lawsuite.kyjovsm.mff.cuni.cz/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://lawsuite.kyjovsm.mff.cuni.cz/">
+        <xsd:element name="archiveClient" type="tns:archiveClient"/>
+        <xsd:element name="archiveClientResponse" type="tns:archiveClientResponse"/>
+        <xsd:element name="createReport" type="tns:createReport"/>
+        <xsd:element name="createReportResponse" type="tns:createReportResponse"/>
+        <xsd:element name="processClient" type="tns:processClient"/>
+        <xsd:element name="processClientResponse" type="tns:processClientResponse"/>
+        <xsd:element name="registerNewClient" type="tns:registerNewClient"/>
+        <xsd:element name="registerNewClientResponse" type="tns:registerNewClientResponse"/>
+        <xsd:element name="reviewClientsData" type="tns:reviewClientsData"/>
+        <xsd:element name="reviewClientsDataResponse" type="tns:reviewClientsDataResponse"/>
+        <xsd:complexType name="archiveClient">
+            <xsd:sequence>
+                <xsd:element name="arg0" type="xsd:int" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="archiveClientResponse">
+            <xsd:sequence>
+                <xsd:element name="return" type="xsd:boolean"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="reviewClientsData">
+            <xsd:sequence>
+                <xsd:element name="arg0" type="tns:report" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="report">
+            <xsd:sequence>
+                <xsd:element name="client" type="tns:client" minOccurs="0"/>
+                <xsd:element name="issuedClaims" type="xsd:string" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+                <xsd:element name="reportId" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="status" type="tns:reportStatus" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="client">
+            <xsd:sequence>
+                <xsd:element name="age" type="xsd:int"/>
+                <xsd:element name="clientState" type="tns:clientState" minOccurs="0"/>
+                <xsd:element name="id" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="name" type="xsd:string" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="reviewClientsDataResponse">
+            <xsd:sequence>
+                <xsd:element name="return" type="xsd:boolean"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="createReport">
+            <xsd:sequence>
+                <xsd:element name="arg0" type="xsd:string" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="createReportResponse">
+            <xsd:sequence>
+                <xsd:element name="return" type="tns:report" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="processClient">
+            <xsd:sequence>
+                <xsd:element name="arg0" type="xsd:int" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="processClientResponse">
+            <xsd:sequence/>
+        </xsd:complexType>
+        <xsd:complexType name="registerNewClient">
+            <xsd:sequence>
+                <xsd:element name="arg0" type="xsd:string" minOccurs="0"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:complexType name="registerNewClientResponse">
+            <xsd:sequence>
+                <xsd:element name="return" type="xsd:boolean"/>
+            </xsd:sequence>
+        </xsd:complexType>
+        <xsd:simpleType name="clientState">
+            <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="NEW_REGISTRATION"/>
+                <xsd:enumeration value="IN_PROGRESS"/>
+                <xsd:enumeration value="PROCESSED"/>
+            </xsd:restriction>
+        </xsd:simpleType>
+        <xsd:simpleType name="reportStatus">
+            <xsd:restriction base="xsd:string">
+                <xsd:enumeration value="TODO"/>
+                <xsd:enumeration value="DATA_MISSING"/>
+                <xsd:enumeration value="QUALIFIED"/>
+            </xsd:restriction>
+        </xsd:simpleType>
+    </xsd:schema>
     </types>
     <message name="processClient">
         <part name="parameters" element="tns:processClient"/>
@@ -131,6 +119,12 @@
     <message name="archiveClientResponse">
         <part name="parameters" element="tns:archiveClientResponse"/>
     </message>
+    <message name="createReport">
+        <part name="parameters" element="tns:createReport"/>
+    </message>
+    <message name="createReportResponse">
+        <part name="parameters" element="tns:createReportResponse"/>
+    </message>
     <portType name="LawSuite">
         <operation name="processClient">
             <input message="tns:processClient"/>
@@ -147,6 +141,10 @@
         <operation name="archiveClient">
             <input message="tns:archiveClient"/>
             <output message="tns:archiveClientResponse"/>
+        </operation>
+        <operation name="createReport">
+            <input message="tns:createReport"/>
+            <output message="tns:createReportResponse"/>
         </operation>
     </portType>
     <binding name="LawSuiteImplPortBinding" type="tns:LawSuite">
@@ -187,10 +185,19 @@
                 <soap:body use="literal"/>
             </output>
         </operation>
+        <operation name="createReport">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
     </binding>
     <service name="LawSuiteImplService">
         <port name="LawSuiteImplPort" binding="tns:LawSuiteImplPortBinding">
-            <soap:address location="http://127.0.0.1:8000/LawSuite"/>
+            <soap:address location="http://localhost:8000/LawSuite"/>
         </port>
     </service>
 </definitions>
