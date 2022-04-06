@@ -20,6 +20,8 @@
                 name="FinalizeClientLink"
                 partnerLinkType="tnswsdl:ProvideEvidenceLinkType"
                 myRole="ProvideEvidenceExecutorRole"/>
+
+        <!-- LAWSUIT: PARTNER LINKS -->
         <partnerLink
                 name="GetReportLink"
                 partnerLinkType="tnswsdl:GetReportLinkType"
@@ -30,6 +32,13 @@
                 partnerLinkType="tnswsdl:GetClientEvaluationLinkType"
                 myRole="GetClientEvaluationRoleClient"
                 partnerRole="GetClientEvaluationRole"/>
+
+        <!-- COURT: PARTNER LINK -->
+        <partnerLink
+                name="RegisterClientToCourtLink"
+                partnerLinkType="tnswsdl:RegisterClientToCourtLinkType"
+                myRole="RegisterClientToCourtRoleClient"
+                partnerRole="RegisterClientToCourtRole"/>
     </partnerLinks>
 
     <variables>
@@ -40,6 +49,9 @@
         <variable name="clientIDIn" type="xsd:string"/>
         <variable name="clientEvidenceURLIn" type="xsd:normalizedString"/>
 
+        <variable name="clientName" type="xsd:string"/>
+        <variable name="clientAge" type="xsd:integer"/>
+
         <variable name="createReportRequestElement" element="lawsuit:createReport"/>
         <variable name="createReportRequest" messageType="lawsuit:createReport"/>
         <variable name="createReportResponse" messageType="lawsuit:createReportResponse"/>
@@ -48,8 +60,19 @@
         <variable name="getClientEvaluationRequest" messageType="lawsuit:reviewClientsData"/>
         <variable name="getClientEvaluationResponse" messageType="lawsuit:reviewClientsDataResponse"/>
 
+        <variable name="registerClientToCourtElement" element="court:registerClient"/>
+        <variable name="registerClientToCourtRequest" messageType="court:registerClient"/>
+        <variable name="registerClientToCourtResponse" messageType="court:registerClientResponse"/>
+
+        <variable name="client" type="lawsuit:client"/>
         <variable name="currentClientReport" type="lawsuit:report"/>
+        <variable name="currentClientEligibilityState" type="xsd:boolean"/>
+
         <variable name="currentClientReportElement" element="lawsuit:report"/>
+        <variable name="currentClientElement" element="lawsuit:client"/>
+
+        <variable name="registeredClient" type="court:client"/>
+
     </variables>
 
     <sequence>
@@ -107,13 +130,31 @@
         <assign name="ProcessGetReportRequest">
             <copy>
                 <from>$createReportResponse//lawsuit:return</from>
-                <to variable="currentClientReport"/>
+                <!-- TODO: This might fail, but we must access its values-->
+                <to variable="currentClientReportElement"/>
+            </copy>
+            <copy>
+                <from>
+                    $currentClientReportElement//lawsuit:client
+                </from>
+                <to variable="currentClientElement"/>
+            </copy>
+            <copy>
+                <from>
+                    $currentClientElement//lawsuit:age
+                </from>
+                <to variable="clientAge"/>
+            </copy>
+            <copy>
+                <from>
+                    $currentClientElement//lawsuit:name
+                </from>
+                <to variable="clientName"/>
             </copy>
         </assign>
 
         <!-- Get client evaluation   -->
-
-        <assign>
+        <assign name="InitGetClientEvaluationRequest">
             <copy>
                 <from>
                     <literal>
@@ -140,12 +181,80 @@
                 inputVariable="getClientEvaluationRequest"
                 outputVariable="getClientEvaluationResponse"/>
 
+        <assign name="ProcessGetClientEvaluationResponse">
+            <copy>
+                <from>$getClientEvaluationResponse//lawsuit:return</from>
+                <to variable="currentClientEligibilityState"/>
+            </copy>
+        </assign>
+
+        <!-- Dispatching -->
+        <if>
+            <!-- TODO: Check whether boolean evaluation works out of box            -->
+            <!-- Client is able to be submitted to the court             -->
+            <condition>$currentClientEligibilityState</condition>
+            <sequence>
+                <assign name="InitRegisterClientToTheCourt">
+                    <copy>
+                        <from>
+                            <literal>
+                                <court:registerClient>
+                                    <court:arg0></court:arg0>
+                                    <court:arg1></court:arg1>
+                                    <court:arg2></court:arg2>
+                                </court:registerClient>
+                            </literal>
+                        </from>
+                        <to variable="registerClientToCourtElement"/>
+                    </copy>
+                    <copy>
+                        <from>clientIDIn</from>
+                        <to>$registerClientToCourtElement//court:arg0</to>
+                    </copy>
+                    <copy>
+                        <from>$clientName</from>
+                        <to>$registerClientToCourtElement//court:arg1</to>
+                    </copy>
+                    <copy>
+                        <from>$clientAge</from>
+                        <to>$registerClientToCourtElement//court:arg2</to>
+                    </copy>
+                    <copy>
+                        <from variable="registerClientToCourtElement"/>
+                        <to variable="registerClientToCourtRequest"/>
+                    </copy>
+                </assign>
+
+                <invoke name="InvokeRegisterToCourt"
+                        partnerLink="RegisterClientToCourtLink"
+                        operation="registerClient"
+                        inputVariable="registerClientToCourtRequest"
+                        outputVariable="registerClientToCourtResponse"/>
+
+                <assign name="ProcessRegisterClientToTheCourt">
+                    <!-- This could be used later for further branching, we'll see                    -->
+                    <copy>
+                        <from>$registerClientToCourtResponse//lawsuit:return</from>
+                        <to variable="registeredClient"/>
+                    </copy>
+                </assign>
+            </sequence>
+            <else>
+                <!-- There was an error during the processing of client and lawsuit needs extra data from the client
+                 or the litigators                -->
+                <sequence>
+
+                </sequence>
+            </else>
+
+        </if>
+
         <reply
-            name="ReplyClientFinalization"
-            partnerLink="FinalizeClientLink"
-            portType="tnswsdl:FinalizeClientPortType"
-            operation="provideClientEvidenceToLawsuit"
-            variable="outputMessage"/>
+                name="ReplyClientFinalization"
+                partnerLink="FinalizeClientLink"
+                portType="tnswsdl:FinalizeClientPortType"
+                operation="provideClientEvidenceToLawsuit"
+                variable="outputMessage"/>
     </sequence>
 
 </process>

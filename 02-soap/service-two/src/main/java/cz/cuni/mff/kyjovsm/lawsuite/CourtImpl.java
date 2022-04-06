@@ -14,7 +14,7 @@ public class CourtImpl implements Court {
 
 
     @Override
-    public Client registerClient(Integer clientID, String name, Integer age) {
+    public Client registerClient(String clientID, String name, Integer age) {
         Objects.requireNonNull(clientID, "Client's ID is required");
         Objects.requireNonNull(name, "Client's name is required");
         Objects.requireNonNull(age, "Client's age is required");
@@ -27,7 +27,7 @@ public class CourtImpl implements Court {
     }
 
     @Override
-    public boolean archiveClient(Integer clientID) {
+    public boolean archiveClient(String clientID) {
         Objects.requireNonNull(clientID, "Client's ID is required");
         LOGGER.info(String.format("Archiving Client with ID: %s...", clientID));
 
@@ -41,17 +41,17 @@ public class CourtImpl implements Court {
         }
 
         if (status) {
-            LOGGER.info(String.format("Client with ID: %d was successfully archived.", clientID));
+            LOGGER.info(String.format("Client with ID: %s was successfully archived.", clientID));
             return true;
         } else {
-            LOGGER.error(String.format("An error occurred during archiving of Client with ID: %d. Please contact the support service", clientID));
+            LOGGER.error(String.format("An error occurred during archiving of Client with ID: %s. Please contact the support service", clientID));
             return false;
         }
 
     }
 
 
-    private Client saveClient(Integer clientID, String name, Integer age) throws InterruptedException {
+    private Client saveClient(String clientID, String name, Integer age) throws InterruptedException {
         Client c = new Client();
         c.setId(clientID);
         c.setName(name);

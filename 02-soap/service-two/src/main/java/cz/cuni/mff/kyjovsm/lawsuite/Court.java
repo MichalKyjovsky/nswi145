@@ -13,13 +13,13 @@ public interface Court {
      * The following method stores the data from the request to the database via JPA as a {@link Client} entity.
      */
     @WebMethod
-    Client registerClient(Integer clientID, String name, Integer age);
+    Client registerClient(String clientID, String name, Integer age);
 
     /**
      * @param clientID
      * @return
      */
     @WebMethod
-    boolean archiveClient(Integer clientID);
+    boolean archiveClient(String clientID);
 
 }

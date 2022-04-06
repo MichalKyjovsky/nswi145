@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <deploy
     xmlns="http://www.apache.org/ode/schemas/dd/2007/03"
-    xmlns:tnsbpel="http://"
-    xmlns:tnswsdl="http://"
+    xmlns:tnsbpel="http://kyjovsm.mff.cuni.cz/hw7/bpel"
+    xmlns:tnswsdl="http://kyjovsm.mff.cuni.cz/hw7/wsdl"
     xmlns:court="http://kyjovsm.mff.cuni.cz/court"
     xmlns:lawsuit="http://kyjovsm.mff.cuni.cz/lawsuite">
 
@@ -20,6 +20,9 @@
             <service name="lawsuit:LawSuit" port="LawSuit"/>
         </invoke>
 
+        <invoke partnerLink="RegisterClientToCourtLink">
+            <service name="court:Court" port="Court"/>
+        </invoke>
 
         <provide partnerLink="GetReportLink">
             <service name="tnswsdl:FinalizeClientService" port="GetReportPort"/>
@@ -29,6 +32,9 @@
             <service name="tnswsdl:FinalizeClientService" port="EvaluateClientPort"/>
         </provide>
 
+        <provide partnerLink="RegisterClientToCourtLink">
+            <service name="tnswsdl:FinalizeClientService" port="RegisterClientToCourtPort"/>
+        </provide>
 
     </process>
 </deploy>
