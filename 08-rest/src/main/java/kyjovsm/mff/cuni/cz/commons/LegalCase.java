@@ -1,5 +1,7 @@
 package kyjovsm.mff.cuni.cz.commons;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -8,13 +10,17 @@ import java.util.HashMap;
 import java.util.List;
 
 @XmlRootElement(name = "legalcase")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class LegalCase implements Serializable {
 
-    private int ID;
+    @XmlElement(name = "id")
+    protected int ID;
 
-    private String legalCaseName;
+    @XmlElement(name = "name")
+    protected String legalCaseName;
 
-    private HashMap<Integer, Client> clients;
+    @XmlElement(name = "clients")
+    protected HashMap<Integer, Client> clients;
 
     /**
      * Default constructor for JAXB
@@ -50,17 +56,14 @@ public class LegalCase implements Serializable {
         this.clients.put(this.clients.keySet().size(), newClient);
     }
 
-    @XmlElement(name = "clients")
     public List<Client> getClients() {
         return clients.values().stream().toList();
     }
 
-    @XmlElement(name = "id")
     public int getID() {
         return ID;
     }
 
-    @XmlElement(name = "name")
     public String getLegalCaseName() {
         return legalCaseName;
     }

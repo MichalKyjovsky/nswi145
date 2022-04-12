@@ -1,0 +1,226 @@
+---
+swagger: "2.0"
+info:
+  description: Litigation Financing - Legal Case and Clients API
+  version: 1.0.0
+  title: Litigation Financing - Legal Case and Clients API
+  contact:
+    email: michalkyjovsky@hotmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: virtserver.swaggerhub.com
+basePath: /MichalKyjovsky7/LawOffice/1.0.0
+schemes:
+- https
+- http
+paths:
+  /litigation/cases/{caseID}/clients/{clientID}:
+    get:
+      summary: Gets the specified Client of the particular Legal Case
+      description: |
+        Gets the Client of a Legal Case specified by the path parameters caseID and clientID
+      operationId: getClientOfCase
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: caseID
+        in: path
+        description: Path parameter specifying the Legal Case ID
+        required: true
+        type: integer
+        format: int64
+      - name: clientID
+        in: path
+        description: Path parameter specifying Client's ID
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: Search results matching criteria
+          schema:
+            $ref: '#/definitions/Client'
+        "400":
+          description: Bad input parameter
+    put:
+      summary: Updates the data of the particular Client denoted by its Legal Case ID and Client's ID
+      description: |
+        Updates the data of the particular Client denoted by its Legal Case ID and Client's ID
+      operationId: putClient
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: caseID
+        in: path
+        description: Path parameter specifying the Legal Case ID
+        required: true
+        type: integer
+        format: int64
+      - name: clientID
+        in: path
+        description: Path parameter specifying Client's ID
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Deletes the specified Client of the particular Legal Case
+      description: |
+        Deletes the Client of a Legal Case specified by the path parameters caseID and clientID
+      operationId: deleteClientById
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: caseID
+        in: path
+        description: Path parameter specifying the Legal Case ID
+        required: true
+        type: integer
+        format: int64
+      - name: clientID
+        in: path
+        description: Path parameter specifying Client's ID
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: Client was successffully deleted
+  /litigation/cases/{caseID}:
+    delete:
+      summary: Deletes the specified Legal Case
+      description: |
+        Deletes the  Legal Case specified by the path parameters caseID
+      operationId: deleteLegalCaseById
+      parameters:
+      - name: caseID
+        in: path
+        description: Path parameter specifying the Legal Case ID
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: Legal Case was successffully deleted
+  /litigation/cases:
+    post:
+      summary: Creates a new Legal Case
+      description: |
+        Creates a new Legal Case for the Litigation Financing
+      operationId: createLegalCase
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - in: body
+        name: legalCaseValue
+        description: A Legal Case to be created
+        required: false
+        schema:
+          $ref: '#/definitions/LegalCase'
+      responses:
+        "201":
+          description: A Legal Case was created
+          schema:
+            $ref: '#/definitions/LegalCase'
+        "409":
+          description: The Legal Case already exists
+  /litigation/cases/{caseID}/clients:
+    get:
+      summary: Gets all Clients of the particular Legal Case
+      description: |
+        Gets all Clients of a Legal Case specified by the path parameters caseID
+      operationId: getAllClientsPerCase
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: caseID
+        in: path
+        description: Path parameter specifying the Legal Case ID
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: Search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Client'
+        "400":
+          description: Bad input parameter
+    post:
+      summary: Creates a new Client
+      description: Creates a new Client for the Legal Case specified
+      operationId: createClient
+      consumes:
+      - application/json
+      - application/xml
+      produces:
+      - application/json
+      - application/xml
+      parameters:
+      - name: caseID
+        in: path
+        description: Path parameter specifying the Legal Case ID
+        required: true
+        type: integer
+      - in: body
+        name: client
+        description: A new Client to be created
+        required: false
+        schema:
+          $ref: '#/definitions/Client'
+      responses:
+        "201":
+          description: Client successffully created
+          schema:
+            $ref: '#/definitions/Client'
+        "409":
+          description: Client already exists
+definitions:
+  Client:
+    type: object
+    required:
+    - email
+    - name
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+        example: Jon Doe
+      email:
+        type: string
+        example: jon.doe@example.com
+  LegalCase:
+    type: object
+    required:
+    - clients
+    - name
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+        example: PSM Cartel
+      clients:
+        type: array
+        items:
+          $ref: '#/definitions/Client'

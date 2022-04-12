@@ -5,15 +5,22 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-import jakarta.xml.bind.JAXBElement;
 import kyjovsm.mff.cuni.cz.commons.Client;
 import kyjovsm.mff.cuni.cz.commons.LegalCase;
 
 import java.util.HashMap;
 
+/**
+ * REST-API endpoints for Litigation Financing domain.
+ *
+ * @author michalkyjovsky
+ */
 @Path("/litigation")
 public class LawOfficeClientsResource {
 
+    /**
+     * Map of the {@link LegalCase Legal Cases} and their {@link Client clients}.
+     */
     private static HashMap<Integer, LegalCase> legalCases = new HashMap<>();
 
     @Context
@@ -39,6 +46,7 @@ public class LawOfficeClientsResource {
      * Gets all the client of the given {@link LegalCase} legal case.
      *
      * @param caseID ID of the legal case the client is associated with.
+     *
      * @return The {@link Client client} if found by the given key else {@code null}.
      */
     @GET
@@ -52,6 +60,14 @@ public class LawOfficeClientsResource {
                 .build();
     }
 
+    /**
+     * Deletes the {@link Client client} by its ID.
+     *
+     * @param caseID ID of the legal case the client is associated with.
+     * @param clientID ID of the queried client.
+     *
+     * @return Either {@link Response.Status OK} if client was deleted successfully or internal server error is thrown.
+     */
     @DELETE
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/cases/{caseID}/clients/{clientID}")
@@ -66,6 +82,14 @@ public class LawOfficeClientsResource {
                 .build();
     }
 
+    /**
+     * Deletes the {@link LegalCase Legal Case} by the given ID.
+     *
+     * @param caseID ID of the legal case the client is associated with.
+     *
+     * @return Either {@link Response.Status OK} if legal case was deleted successfully or internal server error is
+     * thrown.
+     */
     @DELETE
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/cases/{caseID}")
@@ -78,69 +102,90 @@ public class LawOfficeClientsResource {
                 .build();
     }
 
+    /**
+     * Creates a new {@link Client client}.
+     *
+     * @param caseID ID of the legal case the client is associated with.
+     * @param client A {@link Client client} instance with name and email attributes.
+     *
+     * @return A newly created {@link Client client} scheme.
+     */
     @POST
-    @Consumes(MediaType.APPLICATION_XML)
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/cases/{caseID}/clients")
-    public Response postClient(@PathParam("caseID") Integer caseID, JAXBElement<Client> client) {
-
-        Client c = client.getValue();
+    public Response createClient(@PathParam("caseID") Integer caseID, Client client) {
 
         Response res;
 
         if (legalCases.get(caseID)
                 .getClients()
                 .stream()
-                .anyMatch(cl -> cl.equals(c))) {
+                .anyMatch(cl -> cl.equals(client))) {
             res = Response.created(uriInfo.getAbsolutePath())
                     .status(Response.Status.CONFLICT)
                     .entity("Given Contact ID is present.")
                     .build();
         } else {
             legalCases.get(caseID)
-                    .addClient(c);
+                    .addClient(client);
             res = Response.created(uriInfo.getAbsolutePath())
                     .status(Response.Status.CREATED)
-                    .entity("Contact was created.")
+                    .entity(client)
                     .build();
         }
         return res;
     }
 
+    /**
+     * Creates a new {@link LegalCase Legal Case}.
+     *
+     * @param legalCaseValue A {@link LegalCase Legal Case} instance to be created.
+     *
+     * @return A newly created {@link LegalCase Legal Case} scheme.
+     */
     @POST
-    @Consumes(MediaType.APPLICATION_XML)
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/cases")
-    public Response createLegalCase(JAXBElement<LegalCase> legalCase) {
-
-        LegalCase legalCaseValue = legalCase.getValue();
+    public Response createLegalCase(LegalCase legalCaseValue) {
 
         Response res;
 
-        if (legalCases.values().stream().anyMatch(lc -> lc.equals(legalCaseValue))) {
+        if (legalCases.values()
+                .stream()
+                .anyMatch(lc -> lc.equals(legalCaseValue))) {
             res = Response.created(uriInfo.getAbsolutePath())
                     .status(Response.Status.CONFLICT)
                     .entity("Given Legal Case already exists.")
                     .build();
         } else {
-            legalCaseValue.setID(legalCases.keySet().size());
-            legalCases.put(legalCaseValue.getID(),  legalCaseValue);
+            legalCaseValue.setID(legalCases.keySet()
+                    .size());
+            legalCases.put(legalCaseValue.getID(), legalCaseValue);
             res = Response.created(uriInfo.getAbsolutePath())
                     .status(Response.Status.CREATED)
-                    .entity("Legal Case was created.")
+                    .entity(legalCaseValue)
                     .build();
         }
         return res;
     }
 
+    /**
+     * Updates the data of the particular Client denoted by its Legal Case ID and Client's ID
+     *
+     * @param caseID ID of the legal case the client is associated with.
+     * @param clientID ID of the queried client.
+     * @param client {@link Client Client} scheme to be providing updated data
+     *
+     * @return An updated {@link Client client} scheme.
+     */
     @PUT
-    @Consumes(MediaType.APPLICATION_XML)
+    @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Path("/cases/{caseID}/clients/{clientID}")
     public Response putClient(@PathParam("caseID") Integer caseID, @PathParam("clientID") Integer clientID,
-            JAXBElement<Client> client) {
-
-        Client c = client.getValue();
+            Client client) {
 
         Response res;
 
@@ -152,10 +197,10 @@ public class LawOfficeClientsResource {
                     .build();
         } else {
             legalCases.get(caseID)
-                    .updateClient(clientID, c);
+                    .updateClient(clientID, client);
             res = Response.created(uriInfo.getAbsolutePath())
                     .status(Response.Status.NO_CONTENT)
-                    .entity("Contact was updated.")
+                    .entity(client)
                     .build();
         }
 

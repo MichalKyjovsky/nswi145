@@ -1,18 +1,25 @@
 package kyjovsm.mff.cuni.cz.commons;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 
 @XmlRootElement(name = "client")
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Client implements Serializable {
 
-    private int ID;
+    @XmlElement(name = "id")
+    protected int ID;
 
-    private String fullName;
+    @XmlElement(name = "name")
+    protected String fullName;
 
-    private String email;
+    @XmlElement(name = "email")
+    protected String email;
 
     /**
      * Default constructor required JAXB
@@ -27,17 +34,15 @@ public class Client implements Serializable {
         this.fullName = fullName;
     }
 
-    @XmlElement(name = "id")
+
     public int getID() {
         return this.ID;
     }
 
-    @XmlElement(name = "name")
     public String getFullName() {
         return this.fullName;
     }
 
-    @XmlElement(name = "email")
     public String getEmail() {
         return this.email;
     }
@@ -56,12 +61,10 @@ public class Client implements Serializable {
             return true;
         }
 
-        if (!(obj instanceof Client)) {
+        if (!(obj instanceof Client that)) {
             return false;
         }
 
-
-        Client that = (Client) obj;
         return this.email.equals(that.email) && this.fullName.equals(that.fullName);
     }
 }
