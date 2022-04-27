@@ -8,17 +8,17 @@
       "lf": "http://kyjovsm.mff.cuni.cz/nswi145/litigation#",
       "Client": "foaf:Client",
       "id": "@id",
-      "firstName": {
-        "@id": "foaf:firstName",
+      "givenName": {
+        "@id": "foaf:givenName",
         "@type": "xsd:string"
       },
-      "lastName": {
-        "@id": "foaf:lastName",
+      "familyName": {
+        "@id": "foaf:familyName",
         "@type": "xsd:string"
       },
       "email" : "lf:email",
 
-      "comment": "rdfs:comment  "
+      "comment": "rdfs:comment"
     },
     "client": {
         "@type": "Client", 

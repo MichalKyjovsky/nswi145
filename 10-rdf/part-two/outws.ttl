@@ -6,8 +6,8 @@
         
 <http://kyjovsm.mff.cuni.cz/client> a foaf:Client ;
     rdfs:comment "Client:1"@en ;
-    foaf:firstName "Jan"^^xsd:string ;
-    foaf:firstName "Novak"^^xsd:string ;
+    foaf:givenName "Jan"^^xsd:string ;
+    foaf:familyName "Novak"^^xsd:string ;
     lf:email "jan.novak@example.com" .    
     
    

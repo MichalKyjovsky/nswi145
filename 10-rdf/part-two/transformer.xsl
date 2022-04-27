@@ -13,8 +13,8 @@
         <xsl:variable name="currentURI" select="concat($prefix, ID)"/>
         &lt;<xsl:value-of select="$currentURI"/>&gt; a foaf:Client ;
         rdfs:comment &quot;Client:<xsl:value-of select="id"/>&quot;@en ;
-        foaf:firstName &quot;<xsl:value-of select="firstname"/>&quot;^^xsd:string ;
-        foaf:firstName &quot;<xsl:value-of select="lastname"/>&quot;^^xsd:string ;
+        foaf:givenName &quot;<xsl:value-of select="firstname"/>&quot;^^xsd:string ;
+        foaf:familyName &quot;<xsl:value-of select="lastname"/>&quot;^^xsd:string ;
         lf:email &quot;<xsl:value-of select="email"/>&quot; .    
     
    
