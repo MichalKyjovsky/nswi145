@@ -15,8 +15,11 @@ public class Client implements Serializable {
     @XmlElement(name = "id")
     protected int ID;
 
-    @XmlElement(name = "name")
-    protected String fullName;
+    @XmlElement(name = "firstName")
+    protected String firstName;
+
+    @XmlElement(name = "lastName")
+    protected String lastName;
 
     @XmlElement(name = "email")
     protected String email;
@@ -28,31 +31,41 @@ public class Client implements Serializable {
         // NOP
     }
 
-    public Client(int ID, String fullName, String email) {
+    public Client(int ID, String firstName, String lastName, String email) {
         this.ID = ID;
         this.email = email;
-        this.fullName = fullName;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
-
 
     public int getID() {
         return this.ID;
     }
 
-    public String getFullName() {
-        return this.fullName;
-    }
 
     public String getEmail() {
         return this.email;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     @Override
@@ -65,6 +78,7 @@ public class Client implements Serializable {
             return false;
         }
 
-        return this.email.equals(that.email) && this.fullName.equals(that.fullName);
+        return this.email.equals(that.email) && this.firstName.equals(that.firstName) && this.lastName.equals(
+                that.lastName);
     }
 }

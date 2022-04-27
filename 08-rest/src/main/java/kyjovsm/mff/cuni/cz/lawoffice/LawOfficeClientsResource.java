@@ -162,7 +162,9 @@ public class LawOfficeClientsResource {
         } else {
             legalCaseValue.setID(legalCases.keySet()
                     .size());
-            legalCases.put(legalCaseValue.getID(), legalCaseValue);
+            legalCases.put(legalCases.keySet()
+                    .size(), new LegalCase(legalCases.keySet()
+                    .size(), legalCaseValue.getLegalCaseName()));
             res = Response.created(uriInfo.getAbsolutePath())
                     .status(Response.Status.CREATED)
                     .entity(legalCaseValue)

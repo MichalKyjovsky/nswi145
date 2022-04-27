@@ -7,6 +7,8 @@
 @prefix court: <http://kyjovsm.mff.cuni.cz/nswi145/court> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix schema: <http://schema.org/> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
 
 
 
@@ -37,6 +39,9 @@ lf:timestamp a rdf:Property ;
         rdf:range lf:Timestamp ;
         rdfs:comment "Time of Contract upload"@en .
 
+lf:email a rdf:Property ;
+        rdf:range xsd:string ;
+        rdfs:comment "Email of the client"@en .
 
 lf:Timestamp a rdfs:Class ;
     rdfs:comment "Timestamp unit"@en .

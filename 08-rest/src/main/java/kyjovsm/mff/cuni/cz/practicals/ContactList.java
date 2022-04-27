@@ -53,7 +53,7 @@ public class ContactList {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Response postContact(@FormParam("fullName") String fullName, @FormParam("email") String email) {
+    public Response postContact(@FormParam("firstName") String firstName, @FormParam("lastName") String lastName, @FormParam("email") String email) {
 
         int contactID = contactList.keySet()
                 .size();
@@ -65,7 +65,7 @@ public class ContactList {
                     .entity("Given Contact ID is present.")
                     .build();
         } else {
-            contactList.put(contactID, new Client(contactID, fullName, email));
+            contactList.put(contactID, new Client(contactID, firstName, lastName, email));
             res = Response.status(Response.Status.CREATED)
                     .entity("Contact was created.")
                     .build();

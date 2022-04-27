@@ -35,7 +35,7 @@ public class LegalCase implements Serializable {
      * @param ID ID of the legal case.
      * @param legalCaseName Name of the legal case.
      */
-    public LegalCase(int ID,  String legalCaseName) {
+    public LegalCase(int ID, String legalCaseName) {
         this.ID = ID;
         this.legalCaseName = legalCaseName;
         this.clients = new HashMap<>();
