@@ -9,7 +9,7 @@
         @prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
         @prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
         @prefix foaf: &lt;http://xmlns.com/foaf/0.1#&gt; .
-        @prefix lf: &lt;kyjovsm.mff.cuni.cz/nswi145/litigation#&gt; .
+        @prefix lf: &lt;http://kyjovsm.mff.cuni.cz/nswi145/litigation#&gt; .
         <xsl:variable name="currentURI" select="concat($prefix, ID)"/>
         &lt;<xsl:value-of select="$currentURI"/>&gt; a foaf:Client ;
         rdfs:comment &quot;Client:<xsl:value-of select="id"/>&quot;@en ;

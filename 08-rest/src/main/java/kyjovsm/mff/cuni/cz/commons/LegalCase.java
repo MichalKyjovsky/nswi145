@@ -39,7 +39,6 @@ public class LegalCase implements Serializable {
         this.ID = ID;
         this.legalCaseName = legalCaseName;
         this.clients = new HashMap<>();
-
     }
 
 

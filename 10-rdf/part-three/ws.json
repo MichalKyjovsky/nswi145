@@ -1,0 +1,33 @@
+{
+    "@context": {
+      "@base": "http://kyjovsm.mff.cuni.cz/nswi145/litigation/",
+      "rdf" : "http://www.w3.org/1999/02/22-rdf-syntax-ns",
+      "rdfs": "http://www.w3.org/2000/01/rdf-schema",
+      "xsd": "http://www.w3.org/2001/XMLSchema#",
+      "foaf": "http://xmlns.com/foaf/0.1#",
+      "lf": "http://kyjovsm.mff.cuni.cz/nswi145/litigation#",
+      "Client": "foaf:Client",
+      "id": "@id",
+      "firstName": {
+        "@id": "foaf:firstName",
+        "@type": "xsd:string"
+      },
+      "lastName": {
+        "@id": "foaf:lastName",
+        "@type": "xsd:string"
+      },
+      "email" : "lf:email",
+
+      "comment": "rdfs:comment  "
+    },
+    "client": {
+        "@type": "Client", 
+        "comment": "Client:1",
+        "id": 1,
+        "firstName": "Jan",
+        "lastName": "Novak",
+        "email": "jan.novak@example.com"
+    }
+  }
+  
+  
