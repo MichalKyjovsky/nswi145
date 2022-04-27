@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ocr: <http://kyjovsm.mff.cuni.cz/nswi145/ocr> .
+@prefix dbpedia: <http://dbpedia.org/ontology/> .
+@prefix lf: <http://kyjovsm.mff.cuni.cz/nswi145/litigation> .
+@prefix lw: <http://kyjovsm.mff.cuni.cz/nswi145/lawsuit> .
+@prefix court: <http://kyjovsm.mff.cuni.cz/nswi145/court> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix schema: <http://schema.org/> .
+
+
+
+ocr:OCR a rdfs:Class ;
+        rdfs:comment "A specialized service for Optical Character Recognition"@en ;
+        rdfs:subClassOf dbpedia:PublicService .
+
+ocr:isProcessedBy a rdf:Property ;
+        rdf:range ocr:OCR ;
+        rdfs:comment "Relation that binds the ocr:OCR service and the Legal Case"@en .
+
+
+lf:personalNumber a rdf:Property ;
+        rdfs:comment "Personal Number of the particular employee / member"@en .
+
+lf:Claim a rdfs:Class ;
+        rdfs:comment "Set of documents and related metadata representing the Legal Case evidence"@en .
+
+lf:uploads a rdf:Property ;
+        rdf:range lf:Claim ;
+        rdfs:comment "Relation that binds the lf:Claim and its Client"@en .
+
+lf:hasSigned a rdf:Property ;
+        rdf:range foaf:Document
+        rdfs:comment "Relation that binds the Contract with its Client"@en .
+
+lf:timestamp a rdf:Property ;
+        rdf:range lf:Timestamp ;
+        rdfs:comment "Time of Contract upload"@en .
+
+
+lf:Timestamp a rdfs:Class ;
+    rdfs:comment "Timestamp unit"@en .
+
+
+lf:documentType a rdf:Property ;
+        rdf:range lf:DocumentType ;
+        rdfs:comment "Type of the document assigned to the Particular Contract"@en .
+
+lf:DocumentType a rdfs:Class ;
+        rdfs:comment "Enum type of the document assigned to the Particular Contract"@en .
+
+lf:assesses a rdf:Property ;
+        rdf:range schema:CourtHouse ;
+        rdf:domain dbpedia:LegalCase ;
+        rdfs:comment "Relation that binds the Legal Case and Court entities"@en .
+
+lf:represents a rdf:Property ;
+        rdf:domain schema:CourtHouse ;
+        rdf:range dbpedia:LawFirm ;
+        rdfs:comment "Relation that binds the Legal Case and Law Suit entities"@en .
+
+lw:advocatesAt a rdf:Property ;
+        rdf:range dbpedia:LawFirm ;
+        rdf:domain schema:CourtHouse ;
+        rdfs:comment "Relation that binds the Law Suit and the Court entities"@en .
+
+court:type a rdf:Property ;
+        rdf:range court:CourtType ;
+        rdfs:comment "Type of the particular Court entity"@en .
+
+court:CourtType a rdf:Class ;
+    rdfs:comment "Enum type of the particular Court entity"@en .
+
+court:jurisdiction a rdf:Property ;
+        rdf:range court:Jurisdiction ;
+        rdfs:comment "Jurisdiction of the particular Court entity"@en .
+
+court:Jurisdiction a rdfs:Class ;
+        rdfs:comment "Enum jurisdiction type of the particular Court entity"@en .
